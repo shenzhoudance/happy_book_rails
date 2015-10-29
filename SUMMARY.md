@@ -1,6 +1,7 @@
  Summary
 
 * [前言](preface.md)
+* [与前端相关](authentication.md)
 * [Rails 入门](part3_rails_premier.md)
   * [Ruby 入门](part3_rails_premier/ruby_premier.md)
   * [写一个DSL](part3_rails_premier/dsl.md)
