@@ -1,4 +1,4 @@
-# Summary
+ Summary
 
 * [前言](preface.md)
 * [Rails 入门](part3_rails_premier.md)
@@ -7,12 +7,12 @@
   * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
   * [form](part3_rails_premier/form_object.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
+  * [rails 接口](part3_rails_premier/interface_document.md)
   * [Ruby 进阶 ](part3_rails_premier/ruby_advanced.md)
   * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
   * [Controller](part3_rails_premier/rails_controller.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [rails 视图](part3_rails_premier/rails_view.md)
-  * [rails 接口](part3_rails_premier/interface_document.md)
 * [Rails 常用的第三方组件]
   * [分页: kaminari](web_components/kaminari.md)
   * [上传图片 carrierwave](web_components/carrierwave.md)
