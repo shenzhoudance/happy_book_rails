@@ -13,6 +13,7 @@
   * [Controller](part3_rails_premier/rails_controller.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [rails 视图](part3_rails_premier/rails_view.md)
+  * API的查看方式
 * [Rails 常用的第三方组件]
   * [分页: kaminari](web_components/kaminari.md)
   * [上传图片 carrierwave](web_components/carrierwave.md)
@@ -41,6 +42,9 @@
   * [优化Rails](part4_rails_advanced/optimzation.md)
   * [元编程](part4_rails_advanced/metaprogramming.md)
 * [Docker 入门](part5_docker_premier.md)
+* [jQuery]
+  * JQUERY的 API用法。
+  * 学习的途径。
 * [Web前端: html, css, javascript framework]
   * [HTML](web_front_end/html.md)
   * [CSS](web_front_end/css.md)
