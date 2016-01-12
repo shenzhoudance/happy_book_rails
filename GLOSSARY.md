@@ -4,6 +4,10 @@
 # Rails
 基于Ruby的Web框架. https://github.com/rails/rails
 
+# Capistrano
+
+自动化的部署工具. http://capistranorb.com
+
 # CarrierWave
 处理图片上传的组件。https://github.com/carrierwaveuploader/carrierwave
 
