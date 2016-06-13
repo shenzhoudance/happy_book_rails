@@ -1,10 +1,12 @@
  Summary
 
 * [前言](preface.md)
+  * [哪些不学](buyongxue.md)
 * [与前端相关](authentication.md)
 * [Rails 入门](part3_rails_premier.md)
   * [Ruby 入门](part3_rails_premier/ruby_premier.md)
-  * [写一个DSL](part3_rails_premier/dsl.md)
+  * [Rails 入门](part3_rails_premier/rails_tutorial.md)
+  * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
   * [form](part3_rails_premier/form_object.md)
   * [接口入门](part3_rails_premier/rails_interface.md)

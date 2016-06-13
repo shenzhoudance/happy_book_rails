@@ -474,3 +474,26 @@ test_class.rb:8:in `extend': wrong argument type Class (expected Module) (TypeEr
 例如：#<Apple:0x00000001f0dad8>
 
 
+## ::  双冒号
+
+表示 class的 常量
+也表示 某个命名空间
+
+
+```
+class Interface
+  class Apple
+    COLOR = 'red'
+  end
+end
+
+
+puts Interface::Apple::COLOR
+```
+
+rails中：
+
+app/controller/interface/apples_controller的话：
+
+class Interface::ApplesController < ....
+end
