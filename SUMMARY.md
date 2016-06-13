@@ -9,6 +9,7 @@
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
   * [form](part3_rails_premier/form_object.md)
+  * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [rails 接口](part3_rails_premier/interface_document.md)
   * [Ruby 进阶 ](part3_rails_premier/ruby_advanced.md)
