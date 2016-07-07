@@ -245,9 +245,12 @@ puts green_one.get_from
 
 ```ruby
 class Apple
+  # 类方法
   def Apple.name
     'apple'
   end
+
+  # 实例方法
   def color
     'red'
   end
@@ -305,11 +308,22 @@ a['name'] #=>  'hi'
 
 ## ruby中的简写
 
+初学者看到Ruby中的简写,立马蒙圈了.
+```ruby
+give "我", :what => '咖啡', :count => '2', :unit => '杯' do
+  "味道不错哟!"
+end
+```
+
+上面的代码, 会让没有接触过ruby的同学不明就里.  我就问一个问题:
+
+give 函数有几个参数?
+
 ### 每个函数的最后一行默认是返回值，是不需要写return的，例如：
 
 ```ruby
 def color
-  'red'
+  'red'  # 等同于:   return 'red'
 end
 ```
 
@@ -327,7 +341,7 @@ Apple.create :name => 'apple', :color => 'red'
 #等同于：
 Apple.create({:name => 'apple', :color => 'red'})
 
-#等同于： Apple.create name: 'apple', color: 'red'
+#等同于hash的另一种写法： Apple.create name: 'apple', color: 'red'
 ```
 
 ### 调用某个block中的某个方法：
@@ -445,13 +459,6 @@ class, module: 首字母大写，骆驼表达法： Apple, Human
 
 方法名：　小写字母开头．　可以以问号？ 或者等号结尾，例如： `name`, `created?`, `color=`
 
-<<Metaprogramming Ruby>>:
-> Ruby高手都用 each 循环．我们跟着照做就好．
-
-## 循环
-
-### for 循环
-
 
 ## 查看API
 
@@ -495,5 +502,85 @@ rails中：
 
 app/controller/interface/apples_controller的话：
 
-class Interface::ApplesController < ....
+```ruby
+class Interface::ApplesController < ApplicationController::Base
+  ## 其他代码
 end
+```
+
+## block, proc, lambda
+
+几乎是一样的.  都表示代码块儿.
+
+ruby的代码块儿是相比其他传统语言特别强大的功能. 碾压其他传统语言.
+
+例子:
+
+```ruby
+[1,2,3].each { |e| puts e }
+
+# 假设student有两个属性:name, age
+Student.all.map { |student|
+  {
+    :name => student.name,
+    :aget => student.age
+  }
+}
+```
+
+### 最后一行代码默认是返回值.
+
+block的最后一行代码是返回值.
+
+```ruby
+[1,2,3].map { |e|
+  "#{e}#{e}"   # 这里是block的最后一行,默认是被return 的.
+}
+
+# => ["11", "22", "33"]
+```
+
+下面这样写,会报错:
+```ruby
+[1,2,3].map { |e|
+  return "#{e}#{e}"
+}
+
+# => in `block in <main>': unexpected return (LocalJumpError)
+```
+
+### do ...end 与 { } 几乎是一样的.
+
+可以认为下面两个代码相同
+
+```ruby
+[1,2,3].each { |e|
+  puts e
+}
+
+[1,2,3].each do |e|
+  puts e
+end
+```
+
+### 一个方法最多只有一个参数是 block, 并且永远是参数的最后一位.
+
+我不会在这里详细讲解block 的定义, 但是大家在使用的时候,要知道这一点,例如:
+
+回到 "简写" 这一节最初的问题:
+
+```ruby
+give "我", :what => '咖啡', :count => '2', :unit => '杯' do
+  "味道不错哟!"
+end
+```
+
+从这里,可以看出:
+
+```ruby
+give(
+  "我",  # => 第一个参数,是一个 string
+  {:what => '咖啡', :count => '2', :unit => '杯'},  # => 第二个参数,是个hash
+  do "味道不错哟!" end   # => 这是第三个参数,是一个block. 也是最后一个参数
+)
+```
