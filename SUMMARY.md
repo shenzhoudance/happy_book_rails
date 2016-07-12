@@ -81,6 +81,6 @@
   * [bundler](automation_tools/bundler.md)
   * [npm](automation_tools/npm.md)
 * [设计相关]
-  * [thoughtworks inception]
+  * [thoughtworks inception](part5_tools_and_theory/inception.md)
   * [UML图](part5_tools_and_theory/uml_diagram.md)
   * [ER图](part5_tools_and_theory/e-r_diagram.md)
