@@ -43,3 +43,4 @@ public/deploy/
 .DS_Store
 Gemfile.lock
 _book
+node_modules
