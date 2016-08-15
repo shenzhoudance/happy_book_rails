@@ -40,26 +40,26 @@ DELETE  /users/3    destroy   对 id=3的 user 进行删除操作。
 下面的代码, 来自某个项目中的命令:  `$ rake routes`:
 
 ```
-						 POST     /travels(.:format)             travels#create
-	new_travel GET      /travels/new(.:format)         travels#new
+             POST     /travels(.:format)             travels#create
+  new_travel GET      /travels/new(.:format)         travels#new
  edit_travel GET      /travels/:id/edit(.:format)    travels#edit
-			travel GET      /travels/:id(.:format)         travels#show
-						 PATCH    /travels/:id(.:format)         travels#update
-						 PUT      /travels/:id(.:format)         travels#update
-						 DELETE   /travels/:id(.:format)         travels#destroy
+      travel GET      /travels/:id(.:format)         travels#show
+             PATCH    /travels/:id(.:format)         travels#update
+             PUT      /travels/:id(.:format)         travels#update
+             DELETE   /travels/:id(.:format)         travels#destroy
 ```
 
 我把它整理一下,大家就知道内容是什么了:
 
-	url 的名字|REST方法 | 对应的url 的表达式  |  对应的 controller#action
----------
-travels_path 			|	POST    |  /travels(.:format)  |           travels#create
-	new_travel_path | GET     |  /travels/new(.:format) |        travels#new
- edit_travel_path | GET     | /travels/:id/edit(.:format)   | travels#edit
-			travel_path | GET     | /travels/:id(.:format)        | travels#show
-			travel_path | PATCH   | /travels/:id(.:format)        | travels#update
-			travel_path | PUT     | /travels/:id(.:format)        | travels#update
-			travel_path | DELETE  | /travels/:id(.:format)        | travels#destroy
+|url 的名字|REST方法 | 对应的url 的表达式  |  对应的 controller#action|
+|--:|---|---|---|
+|travels_path       | POST    |  /travels(.:format)  |           travels#create|
+|new_travel_path | GET     |  /travels/new(.:format) |        travels#new|
+|edit_travel_path | GET     | /travels/:id/edit(.:format)   | travels#edit|
+|travel_path | GET     | /travels/:id(.:format)        | travels#show|
+|travel_path | PATCH   | /travels/:id(.:format)        | travels#update|
+|travel_path | PUT     | /travels/:id(.:format)        | travels#update|
+|travel_path | DELETE  | /travels/:id(.:format)        | travels#destroy|
 
 所以, 看到第一列了吗? 大家见到的 `xx_path`, `xx_url` 就是从这里来的. 另外, `travel_path`等同于`travel_url`.
 
