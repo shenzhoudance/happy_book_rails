@@ -6,9 +6,8 @@
   * [Ruby 入门](part3_rails_premier/ruby_premier.md)
   * [Ruby 进阶](part3_rails_premier/ruby_jin_jie.md)
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
-  * [Rails 入门](part3_rails_premier/rails_tutorial.md)
-  * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
-  * [form](part3_rails_premier/form_object.md)
+  * [路由](part3_rails_premier/routes.md)
+  * [form 表单对象](part3_rails_premier/form_object.md)
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [rails 接口](part3_rails_premier/interface_document.md)
@@ -19,6 +18,7 @@
   * [rails 视图](part3_rails_premier/rails_view.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * API的查看方式
+  * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
 * [Rails 常用的第三方组件]
   * [分页: kaminari](web_components/kaminari.md)
   * [上传图片 carrierwave](web_components/carrierwave.md)

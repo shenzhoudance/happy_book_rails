@@ -1,23 +1,32 @@
-#  表单对象。
+#  form 与 表单对象。
 
+下面是一个最常见的表单:
+
+```
 <%= form_for @user do |f| %>
   <%= f.label :name %>
   <%= f.text_field :name %>
   <%= f.submit %>
 <% end %>
+```
 
 form_for 是个方法。
 要三个参数：
+
 ```
 form_for(record, options = {}, &block)
 ```
 
 
+对于下面的代码:
+```
 <%= form_for @user do |f| %>
-上面代码中， record:  @user,    options, 就是 {}, 所以被省略掉了。
+```
+record:  @user,    options, 就是 {}, 所以被省略掉了。
 最后一个参数，是 block.
 
 1. 为什么，第二个参数可以被省略掉？
+
 因为， 在ruby当中， 规定： 如果一个函数的参数中，有block, 那么这个block,
 必须是最后一个参数。
 
@@ -27,14 +36,14 @@ block, 所以，它就是最后的参数。
 而： form_for @user, 表示， form_for的第一个参数，就是 @user.
 
 所以，根据form_for的定义：
+
 1. 第一个参数，有了。
 2. 第二个参数，在定义中，就是： 可选的。 ( options = {} )
 3. 第三个参数：( &block ) 也有了。
 
 所以这个函数就完整了，可以正常运行了。
 
-所以下面的 f.label, f.text_field, f.submit, 中的 f ,就是 block的参数。
-
+下面的 `f.label`, `f.text_field`, `f.submit`, 中的 `f`:
 
 ```
 <%= form_for @user do |f| %>
@@ -75,12 +84,11 @@ params["name"]
 <%=  form_for 'name' %>
 ```
 
-"name",  'name',  :name
-string ,  string,  symbol.
+"name" |  'name' | :name
+---
+string |  string |  symbol
 
 symbol:  不变的字符串。  ruby 的概念。
-"name",  'name',  :name
-
 
 ```
 <%= form_for @post do |f| %>
@@ -96,15 +104,15 @@ symbol:  不变的字符串。  ruby 的概念。
     method: :patch,
     html: { class: "edit_post", id: "edit_post_45" }
     do |f| %>
-  ...
+
+    # 其他代码
+
 <% end %>
 ```
 
 问题来了：  上面的代码中， form_for 有多少个参数呢？
 
 如果你看了API， 就知道了，它有3个参数。
-
-如果我，（6年ruby 经验），没看过api， 我就会说： 这个方法有 6 个参数。
 
 但是，为什么， as, url, method, 都不是参数呢？ 因为，他们是一个hash,
 在ruby中， hash最外层的大括号很多时候可以省略。
@@ -118,47 +126,10 @@ form_for  @user,   { url: '', method: '' } do |f| ...
 end
 ```
 
-## RESTful
-
-就是使用不同的请求类型， 来获取各种资源。
-
-```
-POST: create,  (创建资源）
-PUT/PATCH： update, (更新）
-GET:  index, show, new, edit, (只读取数据，不修改数据)
-DELETE: destroy (删除)
-```
-
-所以， 在RESTful中，不同的http request类型，就决定了你是要对数据库进行
-什么操作（增，删，改，还是只读？）
-
-至于rails, 是如何实现对RESTful进行解析的呢？
-
-极其简单：
-
-config/routes.rb中：
-```
-resources :users
-```
-
-上面一句，就直接定义了7种路由：
-
-```
-GET  /users         index  显示 user的列表页
-GET  /users/new     new    显示 user的新建页面。
-GET  /users/3       show   显示id是3的user
-GET  /users/3/edit  edit   显示 user(id =3)的编辑页面。
-PUT  /users/3       update 对id = 3的user进行修改 （后面还会紧跟一大串的参数)
-POST /users         create 对users进行创建（后面也有一大堆参数)
-DELETE  /users/3    destroy   对 id=3的 user 进行删除操作。
-```
-
-这就是一种： convention(约定） over configuration (配置)
 
 
 
 ### 表单对象  form-object?
-
 
 ## http 参数 和请求方式
 
@@ -181,51 +152,65 @@ POST    ooxx.html      (form)
 ```
 
 # 10年前 de java代码：
+
+```java
 String title = request.getParameter('post["title"]');
 String content = request.getParameter('post["content"]');
 Post post = new Post();
 post.setTitle(title);
 post.setContent(content);
 post.save();
+```
 
-# 问题就出现了:  属性越多， 上面的赋值语句就越多。
+## 问题就出现了:  属性越多， 上面的赋值语句就越多。
+
 所以，解决方法：  使用表单对象。
 
 最开始的表单对象： 需要手动创建一个object:
 
 /form/  用来出现再 form/ controller 中， 代表表单对象。
-```
-class Post
-  string title
-  text content
-end
-```
 
 这个model  用来操作数据库的。 (java struts框架的里面的 臭名昭著的东东, 2005年)
 ```
-class Post
-  string title
-  text content
-end
+
+class Post {
+  private String title;
+  private String content;
+
+  //getter, setter...
+
+}
+
 ```
 
 所以这就尴尬了：  表单对象，跟数据库的对象，一模一样。口可口可。
 
 Rails形式： 它的宗旨就是 方便程序员， 对人友好：
-演变1：
+
+演变1： (一个属性一个属性的赋值)
+
+```ruby
 post = Post.new :title => params['post']['title'],
   :content => params['post']['content']
 post.save
+```
 
-演变2：
+演变2：(直接给构造函数一个hash , 再save)
+
+```
 post = Post.new params['post']
 post.save
+```
 
-演变3：
+演变3：(把 new ... save 的步骤, 省略成: create )
+
+```
 Post.create params['post']
+```
 
 
 引申： java 与 ruby的不同（  语言能力上的，特别是员编程的不同）
+
 # model: 声明:  ( posts 表， 有两个列：  title, content)
 
 ```
@@ -251,48 +236,53 @@ public Post extends ...{
 ```
 
 元编程动态声明方法的例子：
+
+```
 class Post
 end
 
 post = Post.new
 post.instance_eval("
-                   def say_hi
-                     puts 'hihihi'
-                   end
-                   ")
+  def say_hi
+    puts 'hihihi'
+  end
+")
 post.say_hi
-
 # => 'hihihi'
 
+```
+
 ## 那么问题来了：
-为什么要用rails的自定义html 标签呢？  (
+
+为什么要用rails的自定义html 标签呢？ , 例如:
+```
 form_for,
 form_tag,
 text_field,
-select_tag)
+select_tag
+```
 
+而不是:
+```
 <form>  , <input> ...
+```
 
 答： 为了更加简单
 
 比较:
 
 ```
-<%= form_for @post,
-    as: :post,
-    url: post_path(@post),
-    method: :patch, html: { class: "edit_post", id: "edit_post_45" } do |f| %>
+<%= form_for @post, html: { class: "edit_post", id: "edit_post_45" } do |f| %>
   <%= f.text :title, '我是标题' %>
 <% end %>
 ```
 
 ```
-<form action='/posts'  method='post' >
+<form action='/posts'  method='post' class='edit_post' id='edit_post_45' >
   <input type='text' name='post[title]' value= '我是标题' />
   <input type='text' name='post[content]' value= '我是正文' />
 </form>
 ```
-
 
 看不出来.
 
@@ -326,14 +316,20 @@ TODO: 把臃肿的代码，COPY到这里。
 各种参数: form_object, method, action ...
 
 所以,对于 新建:
+
+```
 <form action='/posts' method = 'post' >
 </form>
+```
 
 对于 编辑:
+```
 <form action='/posts/3/edit' method = 'put' >
 </form>
+```
 
 变成ruby代码的话就是:
+
 ```
 <% if @post.id.present? %>
   <form action='/posts/3/edit' method = 'put' >
@@ -343,11 +339,14 @@ TODO: 把臃肿的代码，COPY到这里。
 ```
 
 于是,我们就可以用:
+
 ```
 <%= form_for @post %>
 ```
 
-而且, 每一个 <form> 中,都有一个authentity_token. 防止注入攻击(XSS).
+这段代码, 来表示上面提到的两种场合(@post 是已经存在的记录,还是没有存在的记录).
+
+而且, 每一个 `<form>` 中,都有一个authentity_token. 防止注入攻击(XSS).
 
 比如说,我在购物时,需要提交表单, 付费 . 这个表单当中,很可能就是:
 ```
@@ -385,9 +384,16 @@ end
     <input type='hidden' name='token' value='<%= generate_token %>' />
 ```
 
-所以使用form tag ， 就再也不用人肉写  385 行的代码了。
-如果使用了form tag:
+所以使用`form tag` ， 就再也不用人肉写上面那行的代码了。
+```
+    <input type='hidden' name='token' value='<%= generate_token %>' />
+```
+
+如果使用了form tag, 就是这样:
+
+```
 <%= form_for @post do |f| %>
+```
 
 同理: text_field,  select
 
@@ -405,34 +411,3 @@ end
 <%= select_tag options_for_select([1,2,3], default_value ) %>
 ```
 
-
-
-## Rails中的各种 _path, _url
-
-如何编辑某个user?
-
-"/users/1/edit"
-
-写成ruby代码:
-1. "/users/" + user.id + "/edit"
-2. "/users/#{user.id}/edit"  # string interpolation 插入插值
-
-最初的形式：
-<%= edit_user_url({:id => User.first.id}) %> <br/>
-
-然后，ruby的最外层的方法调用的 ()可以省略：
-<%= edit_user_url {:id => User.first.id} %> <br/>
-
-ruby的最外层的 hash的 {} 可以省略：
-<%= edit_user_url :id => User.first.id %> <br/>
-
-对于rails来说，每个数据库的对象，转换成 string interpolation 的时候，都是默认调用
-id方法。
-<%= edit_user_url :id => User.first %> <br/>
-
-# 所以,一个默认的model  当它 to_string的时候, 是要返回 id 的.
-<%= edit_user_url User.first %> <br/>
-
-
-==== 有空使劲看:  http://guides.rubyonrails.org/routing.html
-有 各种  _url,  _path 的来历和用法.
