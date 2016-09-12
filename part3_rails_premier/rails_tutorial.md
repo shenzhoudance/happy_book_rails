@@ -24,3 +24,13 @@ class UsersController ...
      @users = User.all
    end
 end
+
+## 入门
+
+
+
+
+
+
+
+k
