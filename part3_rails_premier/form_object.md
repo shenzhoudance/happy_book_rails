@@ -129,37 +129,63 @@ end
 
 
 
+TODO: 把下面的放到文章前面。
 ### 表单对象  form-object?
 
 ## http 参数 和请求方式
 
-get请求： 把参数放到url中。
+get请求： 把参数放到url中。参数可以有不同的形式。
+又可以是数组，又可以是普通的字符串，又可以是一个hash.
+(当然，里面所有的值，都是 String)
+
+<a href='ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content''>...</a>
 GET     ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content'
-  # ids = [3,4]
+  # a = "1", b = "2" ( 普通参数）
+  # ids = ["3","4"]  (数组）
+  # hash 对象参数
   # post =  { 'title':'some_title', content: 'some_content'  }
 
+如果我要发起一个POST 请求
 POST    ooxx.html      (form)
 把参数放到表单中。
 
-如果我有一个对象，叫  post,  它有两个属性：  title, content.
+<form action='ooxx.html' method=POST>
+  <input name='a' value='1'/>
+  <input name='b' value='1'/>
+  ....
+</form>
 
-对应的html表单，就应该写成：：
+如果我有一个对象，叫  article(中文名： 帖子）,  它有两个属性：  title, content.
+
+那么，我们在Rails中，约定， 对应的html表单，就应该写成：：
 ```
-<form action='/posts'  method='post' >
-  <input type='text' name='post[title]' value= '我是标题' />
-  <input type='text' name='post[content]' value= '我是正文' />
+<form action='/articles'  method='post' >
+  <input type='text' name='article[title]' value= '我是标题' />
+  <input type='text' name='article[content]' value= '我是正文' />
 </form>
 ```
+{
+    article: {
+        title: "我是标题",
+        content: "我是正文"
+    }
+}
 
+这样，就可以很方便的让我们后端的代码来处理。后端代码可以非常的简单的
+把上面的hash转换成对应的对象。
+
+
+
+TODO 再往前面放
 # 10年前 de java代码：
 
 ```java
-String title = request.getParameter('post["title"]');
-String content = request.getParameter('post["content"]');
-Post post = new Post();
-post.setTitle(title);
-post.setContent(content);
-post.save();
+String title = request.getParameter('article["title"]');
+String content = request.getParameter('article["content"]');
+Article article = new Article();
+article.setTitle(title);
+article.setContent(content);
+article.save();
 ```
 
 ## 问题就出现了:  属性越多， 上面的赋值语句就越多。
@@ -173,7 +199,7 @@ post.save();
 这个model  用来操作数据库的。 (java struts框架的里面的 臭名昭著的东东, 2005年)
 ```
 
-class Post {
+class Article {
   private String title;
   private String content;
 
@@ -183,54 +209,85 @@ class Post {
 
 ```
 
-所以这就尴尬了：  表单对象，跟数据库的对象，一模一样。口可口可。
+所以这就尴尬了：  表单对象，跟数据库的对象，一模一样。导致了，同样的代码
+出现在了 两个文件当中。
 
+所以，在Rails中， 在一个文件中定义好，就可以在两个地方重用了：
+
+1. 表单对象（处理表单代码时, 把参数保存到 对象中）
+2. 持久层（把对象中的数据保存到DB）
+
+上面的具体过程可以不必理解，但是要知道，rails中的 app/models目录下的
+文件，起到了两个作用。
+
+##
 Rails形式： 它的宗旨就是 方便程序员， 对人友好：
+
+回到刚才的java代码： 可以看到，给对象的赋值是一个一个来的：
+
+// 这个就是form 提交过来的 参数：
+{
+    article: {
+        title: "我是标题",
+        content: "我是正文"
+    }
+}
+
+```java
+String title = request.getParameter('article["title"]');
+String content = request.getParameter('article["content"]');
+Article article = new Article();
+article.setTitle(title);
+article.setContent(content);
+article.save();
+```
 
 演变1： (一个属性一个属性的赋值)
 
 ```ruby
-post = Post.new :title => params['post']['title'],
-  :content => params['post']['content']
-post.save
+article = Article.new({
+    :title => params['article']['title'],
+    :content => params['article']['content']
+})
+article.save  # 在这里执行  insert into articles values (...)
 ```
 
 演变2：(直接给构造函数一个hash , 再save)
 
 ```
-post = Post.new params['post']
-post.save
+article = Article.new params['article']
+article.save
 ```
 
 演变3：(把 new ... save 的步骤, 省略成: create )
 
 ```
-Post.create params['post']
+Article.create params['article']
 ```
 
 
 引申： java 与 ruby的不同（  语言能力上的，特别是员编程的不同）
 
-# model: 声明:  ( posts 表， 有两个列：  title, content)
+# model: 声明:  ( articles 表， 有两个列：  title, content)
 
 ```
-class Post < ActiveRecord::Base
+class Article < ActiveRecord::Base
 end
 ```
 
 它就会自动出现下面的方法：
 
 ```
-post = Post.create ...
-post.title  # => 'ooxx'
-post.content # => 'ooxx'
+article = Article.create ...
+article.title  # => 'ooxx'
+article.content # => 'ooxx'
 ```
 
 // java代码：
 
 ```
-public Post extends ...{
-   public String getTitle() { ...}
+public Article extends ...{
+   public String getTitle() { ...}  // 需要手动定义
    public void setTitle() { ... }
 }
 ```
