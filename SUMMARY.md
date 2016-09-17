@@ -30,6 +30,7 @@
   * [Ruby 进阶 ](part3_rails_premier/ruby_advanced.md)
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [路由](part3_rails_premier/routes.md)
+  * [关联](part3_rails_premier/assocication.md)
   * [form 表单对象](part3_rails_premier/form_object.md)
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
