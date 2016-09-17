@@ -1,4 +1,25 @@
-# 不用学的rails知识
+# 新手入门不用学的东西
+
+##  asset pipe line.
+
+会在部署的时候给你带来大麻烦
+
+in `config/application.rb`:
+
+
+```
+config.assets.enabled = false
+```
+
+## permit
+
+in `config/application.rb`
+```
+config.action_controller.permit_all_parameters = true
+```
+
+
+# 压根不用学的rails知识
 
 我发现下面的知识会对新手造成学习阻碍。所以，千万不要用它。
 

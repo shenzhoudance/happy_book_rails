@@ -24,3 +24,4 @@ class UsersController ...
      @users = User.all
    end
 end
+```
