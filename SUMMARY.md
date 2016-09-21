@@ -6,10 +6,17 @@
   * [后端的使用方式](database_server.md)
   * [前端命令行的使用方式](database_command_line.md)
   * [前端GUI的使用方式](database_gui.md)
-* [Rails 入门](part3_rails_premier.md)
-  * [Ruby 入门](part3_rails_premier/ruby_premier.md)
+
+* [Ruby入门]
+  * [Ruby 语法入门](part3_rails_premier/ruby_premier.md)
   * [Ruby 进阶](part3_rails_premier/ruby_jin_jie.md)
   * [Ruby 进阶 ](part3_rails_premier/ruby_advanced.md)
+
+* [Web基础]
+  * [发起请求的原理](network_basic.md)
+
+* [Rails 入门](part3_rails_premier.md)
+  * [Rails 快速入门](part3_rails_premier/rails_tutorial_from_view.md)
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [路由](part3_rails_premier/routes.md)
   * [关联](part3_rails_premier/assocication.md)
