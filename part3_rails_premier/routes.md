@@ -1,5 +1,28 @@
 # RESTful 路由
 
+## 官方文档中不用看的内容。
+
+只学： resources :xx 就足够了。
+
+了解一些： namespace.
+了解一些： match
+了解一些:  get ... to
+就够了。
+
+其他的都不用看。
+非资源式路由。
+定制资源式路由，不用看。
+
+我们在项目中， 不用那些稀奇古怪的知识。
+
+## 学习的目标
+
+看到 resources, 能瞬间人肉算出它生成的7中路由， 能瞬间
+说出某个路由对应的action。
+
+
+## 下面是大师的讲解。
+
 就是使用不同的请求类型， 来获取各种资源。
 
 ```
@@ -20,7 +43,7 @@ config/routes.rb中：
 ```
 resources :users
 ```
-
+(注意： 不是 resource )
 上面一句，就直接定义了7种路由：
 
 ```
@@ -32,6 +55,7 @@ PUT  /users/3       update    对id = 3的user进行修改 （后面还会紧跟
 POST /users         create    对users进行创建（后面也有一大堆参数)
 DELETE  /users/3    destroy   对 id=3的 user 进行删除操作。
 ```
+(可以使用 $ rake routes 就可以查看当前项目中所有的路由）
 
 这就是一种： convention(约定） over configuration (配置)
 
@@ -73,6 +97,11 @@ DELETE  /users/3    destroy   对 id=3的 user 进行删除操作。
 写成ruby代码:
 1. "/users/" + user.id + "/edit"
 2. "/users/#{user.id}/edit"  # string interpolation 插入插值
+
+实际上上面这两种形式，都是外行的风格（比如，之前做java 的同学，
+来写ruby , 就是这个风格）
+
+下面是 Rails风格(把可读性发挥到极致）的写法：
 
 最初的形式：
 ```
