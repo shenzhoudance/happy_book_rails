@@ -17,8 +17,19 @@
 
 * [Rails 入门](part3_rails_premier.md)
   * [Rails 快速入门](part3_rails_premier/rails_tutorial_from_view.md)
-  * [Rails 入门](part3_rails_premier/rails_tutorial.md)
+  入门过程:
+  1. MVC, 显示hello world
+  2. 路由(router, 跟Controller密切相关)入门 (什么样的URL会被啥 controller/action 处理)
   * [路由](part3_rails_premier/routes.md)
+  3. 视图(view)入门.
+  4. database migration
+  5. Model入门 CRUD (只在 console模式下运行, 不涉及到form. )
+  6. Model间的关联. (一对多, 多对多)
+  7. form 表单. (rails有很多自定义的标签).
+  8. 把所有串起来.
+  9. 各种rails的组件.
+
+  * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [关联](part3_rails_premier/assocication.md)
   * [form 表单对象](part3_rails_premier/form_object.md)
   * [migration](migration.md)
