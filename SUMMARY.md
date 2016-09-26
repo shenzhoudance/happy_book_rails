@@ -1,4 +1,4 @@
-* [前言](preface.md)
+ [前言](preface.md)
   * [毕业设计](biye.md)
   * [哪些不学](part3_rails_premier/buyongxue.md)
 * [与前端相关](authentication.md)
@@ -22,7 +22,9 @@
   2. 路由(router, 跟Controller密切相关)入门 (什么样的URL会被啥 controller/action 处理)
   * [路由](part3_rails_premier/routes.md)
   3. 视图(view)入门.
+  * [rails 视图](part3_rails_premier/rails_view.md)
   4. database migration
+  * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
   5. Model入门 CRUD (只在 console模式下运行, 不涉及到form. )
   6. Model间的关联. (一对多, 多对多)
   7. form 表单. (rails有很多自定义的标签).
@@ -35,10 +37,8 @@
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [rails 接口](part3_rails_premier/interface_document.md)
-  * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
   * [Controller](part3_rails_premier/rails_controller.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
-  * [rails 视图](part3_rails_premier/rails_view.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * API的查看方式
   * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)

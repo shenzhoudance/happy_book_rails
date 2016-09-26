@@ -133,3 +133,14 @@ id方法。
 
 ==== 有空使劲看:  http://guides.rubyonrails.org/routing.html
 有 各种  _url,  _path 的来历和用法.
+
+resources :countries do
+  resources :provinces do
+    resources :cities do
+      resources :districts do
+         ...
+      end
+    end
+  end
+end
+
