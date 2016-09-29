@@ -1,5 +1,13 @@
 # 数据库关联
 
+## 为什么要学
+
+关联关系， 是最重要的 数据库的知识。
+
+数据库，要学的知识：
+
+1. CRUD
+2. 关联。
 
 ## 最简单的关联关系：  一对多。
 
@@ -41,11 +49,11 @@ id      name    mother_id
 (表示： 该行， 对应 mother 表中的某个记录）
 
 唯一作用就是： 记录了 表间关系。
-外键的普通话翻译：  表示， 所在表的所在行， 属于其他某个表的 id = x 的记录。
+外键的普通话翻译：  外键的值，其实是另一个表的id 的值。
 
 ### 用SQL来表示。
 
-1
+1 (见后面的 join .. on .. )
 
 
 ### 用代码来表示
@@ -64,7 +72,9 @@ end
 
 xiao_wang = Son.first
 # 就会生成SQL：   select * from sons where id = 1;
-mama = xiao_wang.mother
+
+
+mama = xiao_wang.mother  # 这个 .mother 就是由   class Son  的  belongs_to :mother 生成的。
 # 就会生成SQL：
 #   select * from mothers
 #        join sons
@@ -74,10 +84,84 @@ mama = xiao_wang.mother
 Rails 是如何 根据 配置，来自动生成上面的复杂的 SQL 语句的？
 
 ```
+  最初的配置：
+  belongs_to :mother
+  等同于下面的：
   belongs_to :mother, :class => 'Mother', :foreign_key => 'mother_id'
+
+  可以看出，这个就是Rails最典型的 根据 惯例来编程。
+  （要知道，在java hibernate中，声明这样关联关系的过程，极其类似：
+  1. 声明 哪个表 对应的是 哪个class
+  2. 再在class之间， 声明好 关联关系。
+  3. 声明关联关系的时候，写上 20行代码。
 ```
+
+## 与hibernate的比较
+
+<hibernate-mapping>
+    <class name="Employee" table="EMPLOYEE">
+        <meta attribute="class-description">
+        This class contains the employee detail.
+        </meta> <id name="id" type="int" column="id">
+        <generator class="native"/>
+        </id>
+        <property name="firstName" column="first_name" type="string"/>
+        <property name="lastName" column="last_name" type="string"/>
+        <property name="salary" column="salary" type="int"/>
+    </class>
+</hibernate-mapping>
+
+
+/**
+ * @doclet table='employees'
+ */
+public class Employee {
+   private int id;
+   /**
+    *  @doclet column = 'first_name'
+    */
+   private String firstName;
+   private String lastName;
+   private int salary;
+
+   public Employee() {}
+   public Employee(String fname, String lname, int salary) {
+      this.firstName = fname;
+      this.lastName = lname;
+      this.salary = salary;
+   }
+   public int getId() {
+      return id;
+   }
+   public void setId( int id ) {
+      this.id = id;
+   }
+   public String getFirstName() {
+      return firstName;
+   }
+   public void setFirstName( String first_name ) {
+      this.firstName = first_name;
+   }
+   public String getLastName() {
+      return lastName;
+   }
+   public void setLastName( String last_name ) {
+      this.lastName = last_name;
+   }
+   public int getSalary() {
+      return salary;
+   }
+   public void setSalary( int salary ) {
+      this.salary = salary;
+   }
+}
+
+
+
+
 1. belongs_to :mother, rails就能判断出：  mothers 表，是一的那一端。
 而当前class 是： "class Son", 那么rails 就知道了 两个表的对应关系。
+
 2. :class => 'Mother', 表示， 一的那一端， 对应的model class是Mother.
 根据rails的惯例， Mother model对应的是 数据库中的 mothers 表。
 3. :foreign_key => 'mother_id', rails就知道了， 外键是 'mother_id'.
@@ -91,6 +175,18 @@ Son.first.mother  # .mother方法， 作用在 son 上。 是有 class Son 中�
 Mother.first.sons   # .sons 方法， 作用在 mother上， 是由 class Mother 中的 hash_many  产生的。
 
 ## 一对一： 一对多的特例。
+
+一对多：   has_many/belongs_to
+
+一对一：   has_one/belongs_to
+
+class Mother
+  belongs_to :father
+end
+
+class Father
+  has_one :mother
+end
 
 一个老婆， 有一个老公。
 
@@ -132,7 +228,7 @@ id    name
 200   李老师
 
 
-目前看来， 把外键，放在任何一个表中都满足需求。 所以，需要中间表。  （课程）
+目前看来， 把外键，放在任何一个表中都不满足需求。 所以，需要中间表。  （课程）
 
 lessons
 ----------------
@@ -232,3 +328,184 @@ student_id    teacher_id
 1. 表名不明确。 不要使用 a_bs 这样的表名。对应model比较难写。 (app/models/a_b.rb 吗？)
 2. 任何一个中间表，都是有意义的。 90%的时候，中间表， 是有正常的列的。与其后期通过migration加上这个列， 不如
 一开始，就不要使用 hmabl 这样的方式来声明（声明之后， model 的名字就定下来了。难改）
+
+
+### 多对多的关联时，对中间表的命名。
+
+1. 确定两个对象是多对多的关系
+2. 就肯定有个中间表
+3. 再给中间表起个名字。
+
+中间表，一定要有名字。 不能叫： 中间表1， 中间表2.
+
+如果 A ： B = N ： N
+
+有个不太好用，但是也将就能用的模式：  A_Bs , 例如： student_teachers.
+但是它不如：  lessons 好用。
+
+
+
+# 作业。
+
+1. 使用 mysql, mysql work bench, 创建 两个表：
+
+   妈妈表
+   孩子表。
+   妈妈 ： 孩子 =  1 ： N
+
+   插入一些数据：   王妈妈，  小李， 小明。
+
+   1.1 使用纯 SQL语句： 查询 小李的妈妈。
+   1.2 在 Rails console 中， 查询 小李的妈妈。
+
+
+2. 使用 mysql, mysql work bench, 创建 3个表：
+   2.1  students
+   2.2  teachers
+   2.3  lessons
+
+   实现：  students : teachers = n : n
+   加入若干数据。
+   然后根据 某个学生的名字，查出它的所有老师。
+   也是： 又用SQL， 又要用 Rails console来实现。
+
+补充： 如何在Rails中实现 数据库的映射呢？
+
+极其简单：  如果你的表，名字叫：  teachers, 那么，就在
+app/models 目录下，新建一个rb文件：  teacher.rb
+
+```
+class Teacher < ActiveRecord::Base
+end
+```
+
+然后就可以在 Rails console中调用这个 teacher了。
+
+另外，
+
+1. 使用 config/database.yml 来连接mysql:
+
+```
+development:
+  adapter: mysql2
+  database: db_name_dev
+  username: koploper
+  password:
+  host: localhost
+```
+
+2. 修改 Gemfile, 增加：
+
+gem 'mysql2', '0.3.17' （如果你的Rails也是 4.2.x 的话）
+
+2.1 $ sudo apt-get install libmysqlclient-dev
+3. $ bundle install
+
+4. $ bundle exec rake db:create
+
+5. $ bundle exec rake db:migrate
+
+
+## 关于删除
+
+删除的话，不建议使用 通过Rails 配置好的关联关系来删除。
+
+例如：
+
+mother has_many :sons.  会生成一系列的方法： (rails guides 一定要看）
+
+4.3.1 has_many 关联添加的方法
+
+声明 has_many 关联后，声明所在的类自动获得了 16 个关联相关的方法：
+(用普通话来说：  Mother 自动获得了 16个方法： 把下面的 collection  换成 sons 就行了。）
+wangmama = Mother.first
+
+collection(force_reload = false)   |   wangmama.sons
+collection<<(object, ...)          |   wangmama.sons << Son.create({... })
+collection.delete(object, ...)     |   wangmama.sons.delete
+collection.destroy(object, ...)    |   wangmama.sons.destroy
+collection=objects
+collection_singular_ids
+collection_singular_ids=ids
+collection.clear
+collection.empty?
+collection.size
+collection.find(...)
+collection.where(...)
+collection.exists?(...)
+collection.build(attributes = {}, ...)
+collection.create(attributes = {})
+collection.create!(attributes = {})
+
+
+## destroy 与 delete 区别？
+
+destroy: 会删掉 关联表的 数据（通过调用关联表的方法）
+delete :  不会。 只会删掉当前对象对应的表。
+
+例子：
+
+老王去世了。  老王有20张银行卡。
+
+如果： 我们是上帝。  我们就可以这样写：
+
+laowang.destroy    (老王的银行卡也会被删掉）
+
+laowang.delete  （只删掉老王， 保留银行卡）
+
+级联删除自己看。
+
+实战中，不要用级联删除。（不要一条命令，删掉多个表的数据）
+
+好处： 删的比较干净。 很清爽。
+缺点：
+大项目， 公司内的项目， 一般都不允许删除。 很多项目，用“禁用” 来代替删除。
+
+例子：
+论坛  有用户。  用户会发好多帖子。
+假如某天， 用户老王不在了。  他还会发好多帖子。  这些帖子， 有好多人回帖。
+问题： 如果删了老王，和老王的帖子。 其他人的回帖怎么办？
+所以： 不要删铁，不要删用户。  在用户管理中，把老王 “禁用”(disabled)
+
+在大公司中， 删东西，特别慎重。  宁可不善， 宁可占用空间， 也不作删除。
+
+
+所以，级联删除，在我过去11年，极少用。
+
+另外，实在希望一次删除，删掉多个的话：  要手动删除。
+
+例如： 级联删除：
+
+class Person
+  has_many :cards
+end
+
+class Card
+  # 下面这句，表示： person一旦被删除， 该card也会自动被删除。
+  belongs_to :person, :dependency => :destroy
+end
+
+
+我在调用的时候， 两种写法：
+
+1. 特点： 代码少。
+
+Person.first.destroy   # => cards 也跟着删掉。
+
+2. 特点：删掉哪个，一目了然。
+laowang = Person.first
+
+laowang.cards.delete
+laowang.delete
+
+一般项目中， 表跟表，关联关系，都是比较复杂的。
+
+A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
+我删掉一个A, 你确定， b, c, d 都要跟着删吗？  那时候，class一多，你是记不住：
+哪个has_many 中，包含了 dependency => :destroy
+
+我经历的项目，发生过， 对于一个边缘类的destroy操作，导致： 一对核心类的数据被删掉。
+
+但是， 保留一堆不相干的数据， 起码是不会造成系统崩溃。
+而且： 一旦实战，你会发现： 没有不相干的数据。 你以为的： 脏数据， 都有这样那样的用处。
+如果真有脏数据， 说明人的水平太差。

@@ -25,7 +25,7 @@
   * [rails 视图](part3_rails_premier/rails_view.md)
   4. database migration
   * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
-  5. Model入门 CRUD (只在 console模式下运行, 不涉及到form. )
+  5. [Model入门 CRUD (只在 console模式下运行, 不涉及到form. )](crud.md)
   6. Model间的关联. (一对多, 多对多)
   7. form 表单. (rails有很多自定义的标签).
   8. 把所有串起来.
