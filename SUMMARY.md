@@ -27,6 +27,9 @@
   * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
   5. [Model入门 CRUD (只在 console模式下运行, 不涉及到form. )](crud.md)
   6. Model间的关联. (一对多, 多对多)
+  7. [读数据库，显示到页面上( controller + db  小结合)](query_data_via_controller.md)
+  8. [controller读取request 的参数](read_parameters_via_controller.md)
+  9. [读取HTML表单，并且在controller 中操作数据库](update_db_via_html_form.md)
   7. form 表单. (rails有很多自定义的标签).
   8. 把所有串起来.
   9. 各种rails的组件.

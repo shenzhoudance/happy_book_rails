@@ -1,5 +1,13 @@
 # 新手入门不用学的东西
 
+## csrf_token 在学习前可以省略掉。
+注释掉 protect_from_forgery
+
+class ApplicationController < ActionController::Base
+#   protect_from_forgery with: :exception
+end
+
+
 ##  asset pipe line.
 
 会在部署的时候给你带来大麻烦
