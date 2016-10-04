@@ -30,13 +30,13 @@
   7. [读数据库，显示到页面上( controller + db  小结合)](query_data_via_controller.md)
   8. [controller读取request 的参数](read_parameters_via_controller.md)
   9. [读取HTML表单，并且在controller 中操作数据库](update_db_via_html_form.md)
-  7. form 表单. (rails有很多自定义的标签).
+  * [form 表单对象](part3_rails_premier/form_object.md)
+  7. [form 自定义的标签).](form_helpers.md)
   8. 把所有串起来.
   9. 各种rails的组件.
 
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [关联](part3_rails_premier/assocication.md)
-  * [form 表单对象](part3_rails_premier/form_object.md)
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [rails 接口](part3_rails_premier/interface_document.md)

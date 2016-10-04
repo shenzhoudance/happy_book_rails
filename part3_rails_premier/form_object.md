@@ -1,5 +1,274 @@
 #  form 与 表单对象。
 
+1. 十年前的  form 表单，在后台是如何处理的。
+2. 演进过程。
+3. 表单对象的优缺点，好处
+
+复习： 浏览器，传数据给服务器，能传几种数据类型？
+
+1. /some_url?a=123
+ 字符串： a = '123'
+
+2. /some_url?a[]=1&a[]=2&a[]=3
+数组： a = ['1', '2', '3']
+
+3. /some_url?student[name]=jim&student[age]=20
+hash:  student = { name: "jim", age: "20" }
+
+TODO: 把下面的放到文章前面。
+### 表单对象  form-object?
+
+## http 参数 和请求方式
+
+get请求： 把参数放到url中。参数可以有不同的形式。
+又可以是数组，又可以是普通的字符串，又可以是一个hash.
+(当然，里面所有的值，都是 String)
+
+<a href='ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content''>...</a>
+GET     ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content'
+  # a = "1", b = "2" ( 普通参数）
+  # ids = ["3","4"]  (数组）
+  # hash 对象参数
+  # post =  { 'title':'some_title', content: 'some_content'  }
+
+如果我要发起一个POST 请求
+POST    ooxx.html      (form)
+把参数放到表单中。
+
+<form action='ooxx.html' method=POST>
+  <input name='a' value='1'/>
+  <input name='b' value='1'/>
+  ....
+</form>
+
+如果我有一个对象，叫  article(中文名： 帖子）,  它有两个属性：  title, content.
+
+那么，我们在Rails中，约定， 对应的html表单，就应该写成：：
+```
+<form action='/articles'  method='post' >
+  <input type='text' name='article[title]' value= '我是标题' />
+  <input type='text' name='article[content]' value= '我是正文' />
+</form>
+```
+{
+    article: {
+        title: "我是标题",
+        content: "我是正文"
+    }
+}
+
+这样，就可以很方便的让我们后端的代码来处理。后端代码可以非常的简单的
+把上面的hash转换成对应的对象。
+
+
+rails是可以自动分辨, 某个参数的值，是：  字符串，数组， 还是hash
+<form action='..' method='..'>
+   <input type='text' name='article[title]'/>        params[:article][:title]
+   <input type='content' name='article[content]'/>   params[:article][:content]
+
+   <input type='text' name='colors[]' value='green'/>
+   <input type='text' name='colors[]' value='red'/>
+   <input type='text' name='colors[]' value='yellow'/>
+                                                     params[:colors]   => ['green', 'red', 'yellow']
+   <input type='text' name='article[readers][]' value='jim'/>
+   <input type='text' name='article[readers][]' value='lilei'/>
+                                                     params[:article][:readers] => ["jim", "lilei"]
+</form>
+
+TODO 再往前面放
+# 10年前 de java代码：
+
+```java
+String title = request.getParameter('article["title"]');
+String content = request.getParameter('article["content"]');
+Article article = new Article();
+article.setTitle(title);
+article.setContent(content);
+article.save();
+```
+
+## 问题就出现了:  属性越多， 上面的赋值语句就越多。
+
+所以，解决方法：  使用表单对象。
+
+最开始的表单对象： 需要手动创建一个object:
+
+/form/  用来出现再 form/ controller 中， 代表表单对象。
+
+这个model  用来操作数据库的。 (java struts框架的里面的 臭名昭著的东东, 2005年)
+```
+
+class Article {
+  private String title;
+  private String content;
+
+  //getter, setter...
+
+}
+
+```
+
+所以这就尴尬了：  表单对象，跟数据库的ORM对象，一模一样。导致了同样的代码出现在了 两个文件当中。
+
+## 插一嘴：  做ORM操作时， 内心要知道3个东东：
+
+1.  form object
+2.  ORM model
+3.  数据库table
+
+以上面的  article 为例子。  有两个属性：  title, content.
+
+纯HTML   |  form object  |  ORM model  |  DB TABLE
+------- | ---- | ---- | ---
+1. 纯html
+rails是可以自动分辨, 某个参数的值，是：  字符串，数组， 还是hash
+<form action='..' method='..'>
+   <input type='text' name='article[title]'/>        params[:article][:title]
+   <input type='content' name='article[content]'/>   params[:article][:content]
+</form>
+
+2. form object:  在rails中是隐形的。你看不到它的声明。因为：它是动态创建的。
+(在其他语言和框架中，这个对象，都是 显式 声明的（你的手写出来）, 在struts中就要这样）
+
+看起来是这样：
+
+```
+class Article
+  attr_accessor :title
+  attr_accessor :content
+end
+```
+
+所以，rails中， form 就要这样写：
+
+```
+<% form_for @aritcle  do  |f| %>
+  <%= f.text_field :title %>
+  <%= f.text_field :content %>
+<% end %>
+
+```
+上面的重点，在于：  do ... end.  可以看出， rails 是如何调用 上面的隐形的表单对象的。
+
+  <%= f.text_field :title %>
+
+就是调用了 上面的  attr_accessor :title,
+content 同理。
+
+ 编辑 article的时候， 要显示原来的值， 就是： article.get_title
+ 保存 article的时候， 要保存传过来的值，就是：  article.title=
+
+
+3. ORM model.
+
+app/models 目录下的article.rb：
+```
+class Article < ActiveRecord::Base
+  # rails会自动生成：  title, content 的 accessor
+end
+```
+
+4. DB table:
+
+articles:
+第一个列：  title
+第二个列：  content
+
+
+1. 表单对象（处理表单代码时, 把参数保存到 对象中）
+2. 持久层（把对象中的数据保存到DB）
+
+这两个是一样的东东。
+
+##
+Rails形式： 它的宗旨就是 方便程序员， 对人友好：
+
+回到刚才的java代码： 可以看到，给对象的赋值是一个一个来的：
+
+// 这个就是form 提交过来的 参数：
+{
+    article: {
+        title: "我是标题",
+        content: "我是正文"
+    }
+}
+
+```java
+String title = request.getParameter('article["title"]');
+String content = request.getParameter('article["content"]');
+Article article = new Article();
+article.setTitle(title);
+article.setContent(content);
+article.save();
+```
+
+演变1： (一个属性一个属性的赋值)
+
+```ruby
+article = Article.new({
+    :title => params['article']['title'],
+    :content => params['article']['content']
+})
+article.save  # 在这里执行  insert into articles values (...)
+```
+
+演变2：(直接给构造函数一个hash , 再save)
+
+```
+article = Article.new params['article']
+article.save
+```
+
+演变3：(把 new ... save 的步骤, 省略成: create )
+
+```
+Article.create params['article']
+```
+
+
+引申： java 与 ruby的不同（  语言能力上的，特别是员编程的不同）
+
+# model: 声明:  ( articles 表， 有两个列：  title, content)
+
+```
+class Article < ActiveRecord::Base
+end
+```
+
+它就会自动出现下面的方法：
+
+```
+article = Article.create ...
+article.title  # => 'ooxx'
+article.content # => 'ooxx'
+```
+
+// java代码：
+
+```
+public Article extends ...{
+   public String getTitle() { ...}  // 需要手动定义
+   public void setTitle() { ... }
+}
+```
+
+元编程动态声明方法的例子：
+
+```
+class Post
+end
+
+post = Post.new
+post.instance_eval("
+  def say_hi
+    puts 'hihihi'
+  end
+")
+post.say_hi
+# => 'hihihi'
+
+```
+
 下面是一个最常见的表单:
 
 ```
@@ -129,185 +398,6 @@ end
 
 
 
-TODO: 把下面的放到文章前面。
-### 表单对象  form-object?
-
-## http 参数 和请求方式
-
-get请求： 把参数放到url中。参数可以有不同的形式。
-又可以是数组，又可以是普通的字符串，又可以是一个hash.
-(当然，里面所有的值，都是 String)
-
-<a href='ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content''>...</a>
-GET     ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content'
-  # a = "1", b = "2" ( 普通参数）
-  # ids = ["3","4"]  (数组）
-  # hash 对象参数
-  # post =  { 'title':'some_title', content: 'some_content'  }
-
-如果我要发起一个POST 请求
-POST    ooxx.html      (form)
-把参数放到表单中。
-
-<form action='ooxx.html' method=POST>
-  <input name='a' value='1'/>
-  <input name='b' value='1'/>
-  ....
-</form>
-
-如果我有一个对象，叫  article(中文名： 帖子）,  它有两个属性：  title, content.
-
-那么，我们在Rails中，约定， 对应的html表单，就应该写成：：
-```
-<form action='/articles'  method='post' >
-  <input type='text' name='article[title]' value= '我是标题' />
-  <input type='text' name='article[content]' value= '我是正文' />
-</form>
-```
-{
-    article: {
-        title: "我是标题",
-        content: "我是正文"
-    }
-}
-
-这样，就可以很方便的让我们后端的代码来处理。后端代码可以非常的简单的
-把上面的hash转换成对应的对象。
-
-
-
-TODO 再往前面放
-# 10年前 de java代码：
-
-```java
-String title = request.getParameter('article["title"]');
-String content = request.getParameter('article["content"]');
-Article article = new Article();
-article.setTitle(title);
-article.setContent(content);
-article.save();
-```
-
-## 问题就出现了:  属性越多， 上面的赋值语句就越多。
-
-所以，解决方法：  使用表单对象。
-
-最开始的表单对象： 需要手动创建一个object:
-
-/form/  用来出现再 form/ controller 中， 代表表单对象。
-
-这个model  用来操作数据库的。 (java struts框架的里面的 臭名昭著的东东, 2005年)
-```
-
-class Article {
-  private String title;
-  private String content;
-
-  //getter, setter...
-
-}
-
-```
-
-所以这就尴尬了：  表单对象，跟数据库的对象，一模一样。导致了，同样的代码
-出现在了 两个文件当中。
-
-所以，在Rails中， 在一个文件中定义好，就可以在两个地方重用了：
-
-1. 表单对象（处理表单代码时, 把参数保存到 对象中）
-2. 持久层（把对象中的数据保存到DB）
-
-上面的具体过程可以不必理解，但是要知道，rails中的 app/models目录下的
-文件，起到了两个作用。
-
-##
-Rails形式： 它的宗旨就是 方便程序员， 对人友好：
-
-回到刚才的java代码： 可以看到，给对象的赋值是一个一个来的：
-
-// 这个就是form 提交过来的 参数：
-{
-    article: {
-        title: "我是标题",
-        content: "我是正文"
-    }
-}
-
-```java
-String title = request.getParameter('article["title"]');
-String content = request.getParameter('article["content"]');
-Article article = new Article();
-article.setTitle(title);
-article.setContent(content);
-article.save();
-```
-
-演变1： (一个属性一个属性的赋值)
-
-```ruby
-article = Article.new({
-    :title => params['article']['title'],
-    :content => params['article']['content']
-})
-article.save  # 在这里执行  insert into articles values (...)
-```
-
-演变2：(直接给构造函数一个hash , 再save)
-
-```
-article = Article.new params['article']
-article.save
-```
-
-演变3：(把 new ... save 的步骤, 省略成: create )
-
-```
-Article.create params['article']
-```
-
-
-引申： java 与 ruby的不同（  语言能力上的，特别是员编程的不同）
-
-# model: 声明:  ( articles 表， 有两个列：  title, content)
-
-```
-class Article < ActiveRecord::Base
-end
-```
-
-它就会自动出现下面的方法：
-
-```
-article = Article.create ...
-article.title  # => 'ooxx'
-article.content # => 'ooxx'
-```
-
-// java代码：
-
-```
-public Article extends ...{
-   public String getTitle() { ...}  // 需要手动定义
-   public void setTitle() { ... }
-}
-```
-
-元编程动态声明方法的例子：
-
-```
-class Post
-end
-
-post = Post.new
-post.instance_eval("
-  def say_hi
-    puts 'hihihi'
-  end
-")
-post.say_hi
-# => 'hihihi'
-
-```
 
 ## 那么问题来了：
 
@@ -468,3 +558,49 @@ end
 <%= select_tag options_for_select([1,2,3], default_value ) %>
 ```
 
+
+作业：
+
+1. 实现一个form
+2. form中，包含：
+
+<input type='text'/>
+<input type='hidden'/>
+<textarea/>
+<select>
+<options>
+<input type='radio'/>
+<input type='checkbox'/>
+<input type='file'/>
+<input type='password'/>
+
+把上面几个学好就可以。
+
+不用学的：   日期输入框,数字， url, phone .. 其他的都不用学。
+
+3. 实现一个 select （ 选择框，下拉单， drop down (US 叫法））
+里面的选项， 来自于： 数据库。  举个例子：
+
+数据库中，有个表，colors,
+表只有两个列：
+id,  value
+--- | ---
+10  | red
+20  | green
+30  | blue
+
+写出下面的 html:
+
+<select name='article[color]' >
+  <option value='10'>red</option>
+  <option value='20'>green</option>
+  <option value='30'>blue</option>
+</select>
+
+并且，可以在后台(create, update action中）保存。
+
+提示：
+   1. 创建一个表。 colors
+   2. 有相关的 model
+   3. 查看(实现形式1）： select_tag, options_from_collection_for_select
+   4. 查看(实现形式2）： select_tag , options_for_select
