@@ -604,3 +604,108 @@ id,  value
    2. 有相关的 model
    3. 查看(实现形式1）： select_tag, options_from_collection_for_select
    4. 查看(实现形式2）： select_tag , options_for_select
+
+
+## FormHelper FormTagHelper.
+
+两个例子，来对比说明。
+
+
+form tag helper:
+  <%= text_field_tag 'my_title' %>
+
+区别:
+
+1. form helper:
+  <%= f.text_field :title %>
+
+  1.1. 需要与 form object 配合使用。
+  1.2  它的name 是自动生成的。 例如：  name="student[age]"
+      student 必须是 某个 class的  instance
+      并且， age 必须是form object的方法（也就是 数据库的列。)
+  优点： 可以简化我们对表单项的操作。（例如： 下拉单 或 文本框的 默认值）
+
+2. form tag helper:
+
+  2.1 可以独立使用。 跟表单对象无关。
+  2.2 名字可以随意取。 name='abc'
+  优点： 特别灵活。  可以脱离表单对象使用。  而且 便于理解。
+
+相同点：   作用是一样的。
+
+例如：
+
+  <%= f.submit "OK"%>
+  <%= submit_tag "OK" %>
+
+都会生成：
+<input type="submit" name="commit" value="OK">
+
+例子2：
+
+
+  <%= f.text_field :title %>
+  <%= text_field_tag 'article[title]' %>
+
+都会生成：
+
+  <input type="text" name="article[title]" id="article_title">
+
+
+所以说， form helper 与 form tag helper 都是一样的。 一个东西。写法不同。
+
+甚至， 我们在API文档上，都可以看到Rails 作者，告诉我们：
+
+form helper: http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html
+form tag helper: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html
+
+中，都可以看到， xx_field 的文档中，会说： 请参考  xx_field_tag . 例如：
+
+time_field 中：
+```
+Options: Accepts same options as time_field_tag
+```
+
+提示： 我们做rails的前半年，一定要多翻： 上面两个文档。
+
+## 注意：
+
+api 的文档， 跟真正的用法，有一定区别。
+http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-label
+
+(前提： @article 是在 controller中定义好的）
+下面，两个input， 是一样的。
+<%= form_for @article do |f| %>
+  title: <%= f.text_field :title %><br/>  # 大家都使用这个写法！
+  <%= text_field :article, :title %>      # 忘掉这个写法。
+end
+
+都会生成： <input type="text" name="article[title]" id="article_title">
+
+但是，实战当中， 我们都是用 f.text_field('method') 这样的 简写形式。
+不会使用 text_field('object', 'method') 这样的形式
+
+<%= form_for @article do %>
+
+等同于：
+
+两个形式：
+
+1.(@article 是 Article.new的时候）
+<%= form_for :article , :url => article_path, :method => 'post'  do %>
+
+2. (@article 是 Article.find(2)的时候）
+<%= form_for :article , :url => update_article_path(:id => 2), :method => 'put'  do %>
+
+注意：
+
+1. 忘掉   form_for :xx 的形式， 使用 form_for @xx .
+2. 只要当前操作与 数据库有关系，那么就用  form_for ，会让你特别省力。  除非有必要，才
+使用  form_tag
+例如：
+
+form_for  对应：  创建， 更新操作。
+form_tag  对应：  某个列表页的搜索。
+
+
+
