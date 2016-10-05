@@ -21,6 +21,7 @@
   1. MVC, 显示hello world
   2. 路由(router, 跟Controller密切相关)入门 (什么样的URL会被啥 controller/action 处理)
   * [路由](part3_rails_premier/routes.md)
+  * [路由-特殊情况](part3_rails_premier/routes_special.md)
   3. 视图(view)入门.
   * [rails 视图](part3_rails_premier/rails_view.md)
   4. database migration

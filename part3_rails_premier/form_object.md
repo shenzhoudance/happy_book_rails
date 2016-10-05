@@ -581,27 +581,48 @@ end
 3. 实现一个 select （ 选择框，下拉单， drop down (US 叫法））
 里面的选项， 来自于： 数据库。  举个例子：
 
-数据库中，有个表，colors,
-表只有两个列：
-id,  value
+
+3.1
+数据库中，有两个表，books(书） , 一个是： publisher （出版社）   books :  publisher = n : 1
+
+books表， 有下面的列：
+
+id    title    publisher_id
+-- |  -- |  --
+1  |   java入门  |
+2  |   ruby 入门  |
+3  |   javascript 入门 |
+
+publisher 表只有两个列：
+
+id,   name
 --- | ---
-10  | red
-20  | green
-30  | blue
+10  | 人民教育出版社
+20  | 商务印书馆
+30  | 电子工业出版社
 
-写出下面的 html:
+3.2
+写出下面的 html: (使用  select_tag  与 options_from_collection_for_select )
 
-<select name='article[color]' >
-  <option value='10'>red</option>
-  <option value='20'>green</option>
-  <option value='30'>blue</option>
+```
+选择出版社：
+<select name='books[publisher_id]' >
+  <option value='10'>人民教育出版社</option>
+  <option value='20'>商务印书馆</option>
+  <option value='30'>电子工业出版社</option>
 </select>
+```
+
+3.3
+在新建或者 编辑 books的页面中，  可以对publisher 进行选择。
 
 并且，可以在后台(create, update action中）保存。
 
+
+
 提示：
-   1. 创建一个表。 colors
-   2. 有相关的 model
+   1. 创建两个表。 (rails generate migration )
+   2. 有相关的 model ( app/models/book.rb,  publisher.rb )
    3. 查看(实现形式1）： select_tag, options_from_collection_for_select
    4. 查看(实现形式2）： select_tag , options_for_select
 
