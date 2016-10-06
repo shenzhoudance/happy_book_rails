@@ -1,5 +1,14 @@
 #  form 与 表单对象。
 
+提示：
+1. 本节内容比较多。比较烧脑。大家要务必作作业。不动手，学不会。
+2. 多看官方文档：
+英文： http://guides.rubyonrails.org/form_helpers.html
+中文： http://guides.ruby-china.org/form_helpers.html
+也可以看API中的文档（写的也特别细）
+http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
+
+目录：
 1. 十年前的  form 表单，在后台是如何处理的。
 2. 演进过程。
 3. 表单对象的优缺点，好处
@@ -12,11 +21,22 @@
 2. /some_url?a[]=1&a[]=2&a[]=3
 数组： a = ['1', '2', '3']
 
+Started GET "/books?a[]=1&a[]=2&a[]=3" for 127.0.0.1 at 2016-10-06 15:48:10 +0800
+Processing by BooksController#index as HTML
+  Parameters: {"a"=>["1", "2", "3"]}
+
+
 3. /some_url?student[name]=jim&student[age]=20
 hash:  student = { name: "jim", age: "20" }
 
+Started GET "/books?student[name]=jim&student[age]=20" for 127.0.0.1 at 2016-10-06 15:48:52 +0800
+Processing by BooksController#index as HTML
+  Parameters: {"student"=>{"name"=>"jim", "age"=>"20"}}
+
+
 TODO: 把下面的放到文章前面。
 ### 表单对象  form-object?
+
 
 ## http 参数 和请求方式
 
@@ -73,29 +93,66 @@ rails是可以自动分辨, 某个参数的值，是：  字符串，数组， �
    <input type='text' name='article[readers][]' value='jim'/>
    <input type='text' name='article[readers][]' value='lilei'/>
                                                      params[:article][:readers] => ["jim", "lilei"]
+
+  {
+     article: {
+        readers : [
+          "jim",
+          "lilei"
+        ],
+     }
+  }
+
 </form>
+
+(也可以在hash里面，放数组，再放hash, 再数组。 总之，可以各种混用。
+但是： 实际工作中，不要这样用。会被同事骂。 也会把自己绕蒙）
+实战时： 就用最基本的3种形式就可以。
 
 TODO 再往前面放
 # 10年前 de java代码：
 
+对于下面的这个表单：
+```
+<form action='/articles'  method='post' >
+  <input type='text' name='article[title]' value= '我是标题' />
+  <input type='text' name='article[content]' value= '我是正文' />
+</form>
+```
+{
+    article: {
+        title: "我是标题",
+        content: "我是正文"
+    }
+}
+
+10 年前的java代码，是如何处理的呢？
 ```java
+// request 是 一个内置的对象
+// step1. 获取浏览器传过来的所有参数
 String title = request.getParameter('article["title"]');
 String content = request.getParameter('article["content"]');
+
+// step2. 初始化一个 model.  并且 设置它的各种值
 Article article = new Article();
 article.setTitle(title);
 article.setContent(content);
+
+// step3. 保存
 article.save();
 ```
 
-## 问题就出现了:  属性越多， 上面的赋值语句就越多。
+## 问题就出现了:  对象的属性越多，传递过来的参数就越多，上面的赋值语句就越多。
+我曾经见过 有20行语句， 都是： request.getParameter('...')
 
 所以，解决方法：  使用表单对象。
 
 最开始的表单对象： 需要手动创建一个object:
 
-/form/  用来出现再 form/ controller 中， 代表表单对象。
+####  注释掉。 /form/  用来出现再 form/ controller 中， 代表表单对象。
+##### 这个model  用来操作数据库的。
 
-这个model  用来操作数据库的。 (java struts框架的里面的 臭名昭著的东东, 2005年)
+(java struts框架的里面的 臭名昭著的东东, 2005年)
 ```
 
 class Article {
@@ -127,10 +184,22 @@ rails是可以自动分辨, 某个参数的值，是：  字符串，数组， �
    <input type='content' name='article[content]'/>   params[:article][:content]
 </form>
 
-2. form object:  在rails中是隐形的。你看不到它的声明。因为：它是动态创建的。
+2. form object:  在rails中是隐形的。你看不到它的声明。因为：它是在运行时，被
+rails中的某些方法动态创建的。
+
+p.s. 动态创建方法的例子（javascript)
+
+```
+my_string = 'function hi(){  console.info("hi") }'
+"function hi(){  console.info("hi") }"
+eval(my_string)
+undefined
+hi()  # =
+```
+
 (在其他语言和框架中，这个对象，都是 显式 声明的（你的手写出来）, 在struts中就要这样）
 
-看起来是这样：
+rails中， 动态创建的form object, 看起来是这样：
 
 ```
 class Article
@@ -168,6 +237,7 @@ class Article < ActiveRecord::Base
 end
 ```
 
+(也可以认为， 在Rails中， ORM model 跟 form object model 是一个文件。
 4. DB table:
 
 articles:
@@ -178,7 +248,7 @@ articles:
 1. 表单对象（处理表单代码时, 把参数保存到 对象中）
 2. 持久层（把对象中的数据保存到DB）
 
-这两个是一样的东东。
+在rails中这两个是一样的东东。
 
 ##
 Rails形式： 它的宗旨就是 方便程序员， 对人友好：
@@ -202,7 +272,7 @@ article.setContent(content);
 article.save();
 ```
 
-演变1： (一个属性一个属性的赋值)
+演变1： (一个属性一个属性的赋值) 该写法常见于： 从java转行过来的rails程序员。
 
 ```ruby
 article = Article.new({
@@ -226,7 +296,7 @@ Article.create params['article']
 ```
 
 
-引申： java 与 ruby的不同（  语言能力上的，特别是员编程的不同）
+引申： java 与 ruby的不同（  语言能力上的，特别是元编程的不同）
 
 # model: 声明:  ( articles 表， 有两个列：  title, content)
 
@@ -247,6 +317,7 @@ article.content # => 'ooxx'
 
 ```
 public Article extends ...{
+   private String title;
    public String getTitle() { ...}  // 需要手动定义
    public void setTitle() { ... }
 }
@@ -348,7 +419,7 @@ params["name"]
 
 所以，form_for 的第一个参数，也可以写成下面的三种形式。
 ```
-<%=  form_for @name  %>
+<%=  form_for @name  %>   写成这样。  下面两种，不推荐。除非你特别有把握。
 <%=  form_for :name  %>
 <%=  form_for 'name' %>
 ```
@@ -465,23 +536,24 @@ TODO: 把臃肿的代码，COPY到这里。
 所以,对于 新建:
 
 ```
-<form action='/posts' method = 'post' >
+<form action='/articles' method = 'post' >
 </form>
 ```
 
 对于 编辑:
 ```
-<form action='/posts/3/edit' method = 'put' >
+<form action='/articles/3/edit' method = 'post' >
+  <input type='hidden' name='_method' value='put'/>
 </form>
 ```
 
 变成ruby代码的话就是:
 
 ```
-<% if @post.id.present? %>
-  <form action='/posts/3/edit' method = 'put' >
+<% if @article.id.present? %>
+  <form action='/articles/3/edit' method = 'put' >
 <% else %>
-  <form action='/posts' method = 'post' >
+  <form action='/articles' method = 'post' >
 <% end %>
 ```
 
@@ -620,7 +692,7 @@ id,   name
 
 
 
-提示：
+再进一步的细化提示：
    1. 创建两个表。 (rails generate migration )
    2. 有相关的 model ( app/models/book.rb,  publisher.rb )
    3. 查看(实现形式1）： select_tag, options_from_collection_for_select
@@ -632,21 +704,20 @@ id,   name
 两个例子，来对比说明。
 
 
-form tag helper:
-  <%= text_field_tag 'my_title' %>
-
 区别:
 
 1. form helper:
+
   <%= f.text_field :title %>
 
-  1.1. 需要与 form object 配合使用。
+  1.1. 需要与 form object ( <%= form_for @book do |f| %>  .. .<% end %> )配合使用。
   1.2  它的name 是自动生成的。 例如：  name="student[age]"
       student 必须是 某个 class的  instance
       并且， age 必须是form object的方法（也就是 数据库的列。)
   优点： 可以简化我们对表单项的操作。（例如： 下拉单 或 文本框的 默认值）
 
 2. form tag helper:
+  <%= text_field_tag 'my_title' %>
 
   2.1 可以独立使用。 跟表单对象无关。
   2.2 名字可以随意取。 name='abc'
@@ -663,7 +734,6 @@ form tag helper:
 <input type="submit" name="commit" value="OK">
 
 例子2：
-
 
   <%= f.text_field :title %>
   <%= text_field_tag 'article[title]' %>
@@ -706,6 +776,7 @@ end
 但是，实战当中， 我们都是用 f.text_field('method') 这样的 简写形式。
 不会使用 text_field('object', 'method') 这样的形式
 
+## 第二个提示（内容与上面的可能重复）
 <%= form_for @article do %>
 
 等同于：
