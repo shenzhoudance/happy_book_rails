@@ -1,5 +1,195 @@
 # rails+thin服务部署
 
+rails的 运行方式：  3种：
+1. development.   日常开发使用的模式。 该模式下，我们对于rb文件的改动，会立即生效
+（不用重启服务器了！ ）
+不要小看这一点。 在其他的语言，其他的框架中，都要重启的。
+（java => tomcat.   python => pyramid. )
+这个特性，能为我们省太多的事儿了。
+
+注意： 开发模式下，如果修改 config 目录下的内容， 就一定要重启服务器。
+
+2. production
+
+生产模式。部署的时候，务必使用这个模式。
+生产模式下，rails的所有文件，都会一次性的被加载到内存中。 所以它运行起来，速度
+特别快。（development模式，则是： 每次接受到请求时，都会 重新加载资源，所以就慢，
+）所以，该模式下，我们对rb文件的改动，必须重启之后才能生效。
+
+另外，在Rails 3.0以后，引入了： asset pipline, （会分别压缩多个css，js文件到一个大文件中）
+所以，在这个版本以后，部署就多了一些内容。
+
+3. test
+
+一般人用不上。 但是我们要用。 这个是测试环境。 在运行单元测试的时候，使用。
+它的特点： 每次运行测试前，数据库的内容都会清空。
+
+
+
+## development 模式：
+
+$ bundle exec rails server
+
+它默认：
+1. 跑在本地
+2. 端口： 3000
+3. 方式： development
+
+
+## production 模式。
+
+1. 最low的模式： $ bundle exec rails server -e production
+最入门，也最low。 它用的服务器，是 rails自带的服务器。 性能不好。
+同时10个请求访问，就会卡。所以不要用。
+什么时候用呢？ 做 测试部署 的时候，可以用。 用这个命令，可以快速的判定，当前
+的环境能否适合部署。
+
+2. 最常见的模式：  使用 (应用服务器）thin/unicorn/passenger + (静态服务器）nginx 的方式来部署。
+应用服务器:  专门解析rails的服务器。 （例如： erb => html )
+静态服务器： 跟应用的语言无关。 只处理静态的资源。 （例如：
+返回  jpg 图片。
+返回  css
+以及返回 静态的 html 页面 (500, 404）
+以及： 返回  "应用服务器” 处理好的 html 页面）
+
+
+策略：
+
+1. 请求的是： rails 的资源, 那么请求就会 先被 nginx 拦截。
+之后，nginx发现；这个资源应该由  rails服务器来处理。 再把请求交给
+ rails服务器。
+ rails服务器处理好之后， 把结果返回给nginx, nginx再把结果返回给浏览器。
+
+2. 如果请求的是： css/js/普通的html页面， 那么 nginx 就直接处理，返回给浏览器。
+
+browser          |    nginx               |        thin
+request(1个)     <=>    80端口(一个请求）  <=>    3001
+                                           <=>    3002
+                                           <=>    3003
+                                           <=>    3004
+
+## 几个rails服务器的对比
+
+1. passenger :  是跟nginx 结合的特别密切的服务器。 不建议使用。
+普通使用： 没问题。
+缺点：
+如果一台服务器上，部署了10个rails 的项目。 那么：
+每次重启passenger, 10个项目都要一起重启。 或者： 一起关闭。这个是不合理的。
+问题在下列情况会特别凸显：
+例如： 在优酷，当时我们有20个rails子项目。 其中19个，访问量，占了 0.04%。
+另外一个应用的访问量： 99.96% .   它必须 24x7的跑着。不能有当机时间。30秒
+都不行。
+
+那么问题来了：  我只希望部署一个rails应用，但是，passenger 要求我强制重启
+20个rails应用，每次整体一重启, 各种报警全面飙红（在运维同学的后台上），相关
+的负责人，手机卡卡报警短信。
+
+所以，不要用passenger. 无论rails的作者怎么鼓吹（现在也不提了）。
+
+2. unicorn . 我没用过。不提了。 但是看过别人用。配置麻烦，调试麻烦，不适合新手。
+效率也见的提高多少。
+
+3. webrick rails 自带的服务器。 官方不提倡使用。它的性能不好。 优点：
+直接上手 。 加个参数 就可以用了：  $ bundle exec rails server -e production
+
+4. mongrel:  thin 的前身。 10年以前很多人用。 后来 mongrel 不会被维护了。
+
+5. thin. 提倡使用。 优点：
+  1. 上手特别简单。$ bundle exec thin start/stop/restart -C config.yml
+  2. 性能特别好。
+  3. 调试方便。
+  4. 非常方便的可以与nginx做整合。
+
+## 如何使用thin?
+
+官网： http://code.macournoyer.com/thin/
+
+1. 在Gemfile中，安装 这个 gem：
+
+```
+gem 'thin'
+```
+2. $ bundle install
+
+3. $ bundle exec thin start
+Using rack adapter
+Thin web server (v1.7.0 codename Dunder Mifflin)
+Maximum connections set to 1024
+Listening on 0.0.0.0:3000, CTRL+C to stop
+
+以上3步，就可以: 默认启动在 3000端口， 使用development模式。
+
+
+4. 使用 production模式
+虽然 thin 也支持 各种参数（修改port, host , environment ... ）跟 rails server一样，
+但是我们在实战中，使用 配置文件（最大的好处： 一次可以启动多个thin进程，跑在不同
+的端口上）
+
+配置文件如下：
+
+# 文件名： config/thin.yml
+```
+---
+chdir: /opt/app/siwei.me/current   # 你的rails 应用的所在目录
+environment: production    # 指定了 是 production模式
+address: 0.0.0.0
+port: 3001                 # 端口号。
+timeout: 30
+max_conns: 1024
+max_persistent_conns: 100
+require: []
+wait: 30
+servers: 2                 # 很重要。希望启动的thin 的进程数。
+daemonize: true
+```
+上面，需要注意的，就是几个：
+
+chdir.
+environment：
+port: 起始的端口号。 例如： 3001
+servers: 希望启动的thin 的总进程数。 例如：我写成4. 那么启动thin之后，
+就会有4个thin的进程，分别运行在：  3001, 3002, 3003, 3004 端口上。
+
+配置文件写好后， 启动 它:
+
+```
+$ bundle exec thin start -C config/thin.yml
+Starting server on 0.0.0.0:3001 ...
+Starting server on 0.0.0.0:3002 ...
+Starting server on 0.0.0.0:3003 ...
+Starting server on 0.0.0.0:3004 ...
+```
+
+记得：确保在 config/secrets.yml 中，为 production: secret_key_base
+加上内容， 最好是随机生成：
+```
+production:
+  secret_key_base: slkfjdalksjflaksdjflaskjdfklasjdflaksdjfalsjdfaklsdfjlaskdfjlasd
+```
+
+调试： 看log.
+
+log会被放在 log目录下。 例如：
+
+```
+$ ls log
+development.log  thin.3001.log	thin.3003.log
+production.log	 thin.3002.log	thin.3004.log
+```
+
+当你的rails项目没有跑起来时，就来这里看log。
+
+```
+$ ps -ef | grep thin
+kaikai   21020     1  8 10:06 ?        00:00:02 thin server (0.0.0.0:3001)
+kaikai   21030     1  9 10:06 ?        00:00:02 thin server (0.0.0.0:3002)
+kaikai   21040     1  9 10:06 ?        00:00:02 thin server (0.0.0.0:3003)
+kaikai   21052     1  7 10:06 ?        00:00:02 thin server (0.0.0.0:3004)
+kaikai   21069 19171  0 10:06 pts/2    00:00:00 grep thin
+```
+
+
+优酷的项目， 都是  nginx + thin
 
 ### 一.将项目部署到服务器上面一般有两大类方式:
 

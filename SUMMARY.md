@@ -41,11 +41,12 @@
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [rails 接口](part3_rails_premier/interface_document.md)
-  * [Controller](part3_rails_premier/rails_controller.md)
+  * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
+  * [Rails 单元测试](part4_rails_advanced/rails_unit_test.md)
+  * [Rails Test Unit](part3_rails_premier/unit_test.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * API的查看方式
-  * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
 * [Rails 常用的第三方组件]
   * [分页: kaminari](web_components/kaminari.md)
   * [上传图片 carrierwave](web_components/carrierwave.md)
@@ -69,8 +70,6 @@
   * [工作流 event machine]
   * [缓存 redis, memcache](web_components/redis_memcache.md)
 * [Rails 进阶](part4_rails_advanced.md)
-  * [Rails 单元测试](part4_rails_advanced/rails_unit_test.md)
-  * [Rails Test Unit](part3_rails_premier/unit_test.md)
   * [优化Rails](part4_rails_advanced/optimzation.md)
   * [元编程](part4_rails_advanced/metaprogramming.md)
 * [自动化工具]
