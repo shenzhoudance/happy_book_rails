@@ -1,14 +1,165 @@
 # assets pipeline
 
+## 传统给页面增加 js，css的方式
+
+一堆CSS罗列上去：
+
+<link rel="stylesheet" href="./static/buttons.css">
+<link rel="stylesheet" href="./static/normalize.css">
+<link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css">
+<script src="./static/javascript/jquery.min.js"></script>
+<script src="./static/javascript/jqueryui.min.js"></script>
+<script src="./static/javascript/bootstrap.min.js"></script>
+
+以上，会给页面打开时，增加负担： 会多加载6个请求。
+一般的项目， 往往会用到 上百个 js.css. (例如： sina. 每次请求，至少要发出500+ 个请求，
+其中 js 请求 161个， CSS 2 个（这个还可以）)
+
+在比如， 163.com  , 总共 400+ 请求， 8个 css，  121个 js 请求）
+
+所以，优化HTML页面的核心：减少 http请求。
+http协议，最耗费时间的， 不是请求数据库，而是 浏览器端跟 服务器 建立连接的过程。
+
+## 传统，如何减少js/ css 的请求？
+
+多个同类型的文件，可以合并。
+
+下面两个文件，
+buttons.css:
+
 ```
-  <%= javascript_include_tag 'application' %>
-  <% if @is_decorating_case_show %>
-    <%= javascript_include_tag 'jquery.min' %>
-    <%= javascript_include_tag 'jquery.imgbox.pack' %>
-    <%= javascript_include_tag 'jquery.jeditable' %>
-  <% end %>
+.green_button: {   color:  'green' }
+.red_button: {   color:  'red' }
+.yellow_button: {   color:  'yellow' }
 ```
 
+normalize.css:
+
+```
+p { color: black  }
+div { border:  0px; margin: 0px }
+```
+
+就可以合并成一个大文件：
+
+
+```
+.green_button: {   color:  'green' }
+.red_button: {   color:  'red' }
+.yellow_button: {   color:  'yellow' }
+p { color: black  }
+div { border:  0px; margin: 0px }
+```
+
+就是很简单的合并到一起，有冲突也没关系。 哪个出现在下方，哪个就生效么。
+
+javascript也是一样的。
+
+## Rails中，是如何给多个js/css合并到一起的？
+
+### 对于js文件：使用 application.js
+
+全名：app/assets/javascripts/application.js
+
+原来的代码：
+
+<script src="./static/javascript/jquery.min.js"></script>
+<script src="./static/javascript/jqueryui.min.js"></script>
+<script src="./static/javascript/bootstrap.min.js"></script>
+
+我在rails当中，往往把所有的js文件，都放到 `app/assets/javascripts` 目录下。
+
+然后：
+<%= javascript_include_tag 'jquery.min.js' %>
+<%= javascript_include_tag 'jqueryui.min.js' %>
+<%= javascript_include_tag 'bootstrap.min.js' %>
+
+在Rails 3.0以后， 我们就把上面的代码，统一写到 `app/assets/javascripts/application.js` 中：
+
+```
+
+//= require jquery.min.js
+//= require jqueryui.min.js
+//= require bootstrap.min.js
+```
+
+注意： `//= require <文件名>`这个格式是固定的。 多个空格都不行！
+
+然后，在 布局文件中， 引用它：
+
+   app/views/layouts/application.html.erb
+
+```
+
+<html>
+<head>
+  <%= javascript_include_tag 'application' %>
+</head>
+  ...
+</html>
+
+```
+
+### 对于 css 的合并
+把
+
+<link rel="stylesheet" href="./static/buttons.css">
+<link rel="stylesheet" href="./static/normalize.css">
+<link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css">
+
+中的 css文件，保存到 `app/assets/stylesheets`目录下。
+
+新增一个总体的 css文件： `app/assets/stylesheets/application.css`
+
+内容如下
+
+```
+/*
+ *= require buttons.css
+ *= require normalize.css
+ *= require font-awesome.css
+ */
+```
+
+注意： 上面的 `*= require 文件名`的格式是固定的。多个空格都不行。
+
+然后，在 布局文件中， 引用它：
+
+   app/views/layouts/application.html.erb
+
+```
+
+<html>
+<head>
+  <%= stylesheet_link_tag 'application' %> </head>
+  ...
+</html>
+
+```
+
+## 如何压缩他们？需要一个命令
+
+$ bundle exec rake assets:precompile RAILS_ENV=production
+
+- `rake assets:precompile`: 压缩所有的css, js, 以及为图片增加后缀。(方便服务器缓存)
+- `RAILS_ENV=production`: 指定你的环境
+
+运行后，等。 会根据你的CSS/JS文件的数量， 时间上有所不同。
+
+压缩完之后，就会发现， public/assets 目录下，多出来两个文件，形如：
+
+application-308d70d0bd03d91770479da196ec0827.css
+
+
+## rake assets:precompile 需要在什么时候运行？
+
+1. 不需要每次部署都运行。
+2. 只在 production 环境下，才需要运行。
+3. 只在修改了css/js文件后，才需要运行。
+
+
+=================================
+## 下面是老内容。几个注意事项。
 
 ## 1. 如果新增 js 文件？
 
@@ -42,7 +193,7 @@ rake assets:precompile
 
 开发模式下，我们的页面加载，需要很多个 js， css 文件：
 ```
-  <link href="/assets/bootstrap.min.css?body=1" media="all" rel="stylesheet" />
+<link href="/assets/bootstrap.min.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/customized_bootstrap.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/jquery.ui.core.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/jquery.ui.theme.css?body=1" media="all" rel="stylesheet" />

@@ -156,6 +156,23 @@ end
 <link href="http://cdn.dfile.cn/v/1434451523/i1/css/dict.min.css" media="screen" rel="stylesheet" type="text/css" />
 ```
 
+2. 使用 javascript_include_tag 和 stylesheet_link_tag
+
+例如，原始的html:
+<script src="./static/javascript/jquery.min.js"></script>
+<script src="./static/javascript/jqueryui.min.js"></script>
+<script src="./static/javascript/bootstrap.min.js"></script>
+
+在rails当中，往往把所有的js文件，都放到 `app/assets/javascripts` 目录下。
+
+然后：
+<%= javascript_include_tag 'jquery.min.js' %>
+<%= javascript_include_tag 'jqueryui.min.js' %>
+<%= javascript_include_tag 'bootstrap.min.js' %>
+
+最大的优点：js/css 在不同的模式下（development, production) 的路径是不同的。
+rails 会自动识别它的路径。
+
 2. 使用asset pipeline
 
 ## 实战中不用学的
