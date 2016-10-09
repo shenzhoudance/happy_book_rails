@@ -1,11 +1,14 @@
 # rails+thin服务部署
 
+
 rails的 运行方式：  3种：
+
 1. development.   日常开发使用的模式。 该模式下，我们对于rb文件的改动，会立即生效
 （不用重启服务器了！ ）
 不要小看这一点。 在其他的语言，其他的框架中，都要重启的。
 （java => tomcat.   python => pyramid. )
 这个特性，能为我们省太多的事儿了。
+
 
 注意： 开发模式下，如果修改 config 目录下的内容， 就一定要重启服务器。
 
@@ -25,6 +28,38 @@ rails的 运行方式：  3种：
 它的特点： 每次运行测试前，数据库的内容都会清空。
 
 
+打开 config/environments 文件夹，可以看到3个配置文件。
+
+▾ config/
+  ▾ environments/
+      development.rb
+      production.rb
+      test.rb
+每个配置文件，对应一种 rails的 运行模式。
+
+打开 config/database.yml, 也可以看到针对3个环境的不同配置：
+
+ development:
+   adapter: mysql2
+   database: my_library
+   username: root
+   password: 666
+   host: localhost
+
+ production:
+   adapter: mysql2
+   database: my_library
+   username: root
+   password: 666
+   host: localhost
+
+ test:
+   adapter: mysql2
+   database: my_library
+   username: root
+   password: 666
+   host: localhost
+
 
 ## development 模式：
 
@@ -38,19 +73,22 @@ $ bundle exec rails server
 
 ## production 模式。
 
-1. 最low的模式： $ bundle exec rails server -e production
-最入门，也最low。 它用的服务器，是 rails自带的服务器。 性能不好。
+下面是两种进入到production模式的办法：
+
+1. 最low的办法： $ bundle exec rails server -e production
+最入门，也最low。 它用的服务器，是 rails自带的服务器(webrick)。 性能不好(类似于数据库中的 sqlite)。
 同时10个请求访问，就会卡。所以不要用。
-什么时候用呢？ 做 测试部署 的时候，可以用。 用这个命令，可以快速的判定，当前
-的环境能否适合部署。
+什么时候用呢？ 做 测试部署 的时候，可以用。 用这个命令，可以快速的判定，当前的环境能否适合部署。
 
 2. 最常见的模式：  使用 (应用服务器）thin/unicorn/passenger + (静态服务器）nginx 的方式来部署。
-应用服务器:  专门解析rails的服务器。 （例如： erb => html )
+应用服务器:  专门负责生成动态的内容(例如：rails/java)的服务器。 （例如： erb => html )
 静态服务器： 跟应用的语言无关。 只处理静态的资源。 （例如：
 返回  jpg 图片。
 返回  css
 以及返回 静态的 html 页面 (500, 404）
 以及： 返回  "应用服务器” 处理好的 html 页面）
+
+也就是说， 静态服务器，可以直接 运行 静态站点。
 
 
 策略：
@@ -87,12 +125,12 @@ request(1个)     <=>    80端口(一个请求）  <=>    3001
 所以，不要用passenger. 无论rails的作者怎么鼓吹（现在也不提了）。
 
 2. unicorn . 我没用过。不提了。 但是看过别人用。配置麻烦，调试麻烦，不适合新手。
-效率也见的提高多少。
+执行效率也没见的提高多少。
 
 3. webrick rails 自带的服务器。 官方不提倡使用。它的性能不好。 优点：
 直接上手 。 加个参数 就可以用了：  $ bundle exec rails server -e production
 
-4. mongrel:  thin 的前身。 10年以前很多人用。 后来 mongrel 不会被维护了。
+4. mongrel:  thin 的前身。 10年以前很多人用。 后来 mongrel 项目停掉了。
 
 5. thin. 提倡使用。 优点：
   1. 上手特别简单。$ bundle exec thin start/stop/restart -C config.yml
@@ -144,8 +182,8 @@ daemonize: true
 ```
 上面，需要注意的，就是几个：
 
-chdir.
-environment：
+chdir: 进程的初始位置。务必与rails项目路径相同。
+environment： production/development
 port: 起始的端口号。 例如： 3001
 servers: 希望启动的thin 的总进程数。 例如：我写成4. 那么启动thin之后，
 就会有4个thin的进程，分别运行在：  3001, 3002, 3003, 3004 端口上。
@@ -190,6 +228,34 @@ kaikai   21069 19171  0 10:06 pts/2    00:00:00 grep thin
 
 
 优酷的项目， 都是  nginx + thin
+
+## 问题： 开多少个thin进程合适？
+
+有多少个CPU内核，就开多少个thin进程。
+例如： 4核CPU， 一般开： 4个 thin 进程。（同理， nginx的  worker也是一样）
+
+
+
+# 作业：
+
+1. 在服务器上， 建立一个静态站点。
+2. 在服务器上， 运行 rails的production 模式。
+
+
+# nginx 内容： 见 operation.siwei.tech
+
+
+
+
+
+
+
+
+
+
+
+
+=-==============================  下面是之前写的内容。 老旧了。
 
 ### 一.将项目部署到服务器上面一般有两大类方式:
 
