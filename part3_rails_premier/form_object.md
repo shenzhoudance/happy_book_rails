@@ -764,17 +764,25 @@ Options: Accepts same options as time_field_tag
 api 的文档， 跟真正的用法，有一定区别。
 http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-label
 
+api 中写着：
+
+text_field(object, method, options={})
+
+实际问题来了：
 (前提： @article 是在 controller中定义好的）
 下面，两个input， 是一样的。
 <%= form_for @article do |f| %>
   title: <%= f.text_field :title %><br/>  # 大家都使用这个写法！
-  <%= text_field :article, :title %>      # 忘掉这个写法。
+  <%= text_field :article, :title %>      # 忘掉这个api 中的写法。
 end
 
 都会生成： <input type="text" name="article[title]" id="article_title">
 
 但是，实战当中， 我们都是用 f.text_field('method') 这样的 简写形式。
 不会使用 text_field('object', 'method') 这样的形式
+
+API 那样写，是因为在API文档中没有上下文。 所以它那么表示的。（深层会有很多逻辑，很多
+动态生成的代码，我们不考虑）
 
 ## 第二个提示（内容与上面的可能重复）
 <%= form_for @article do %>
@@ -800,4 +808,41 @@ form_for  对应：  创建， 更新操作。
 form_tag  对应：  某个列表页的搜索。
 
 
+# form_for 与 form_tag 的区别和联系
+
+controller:
+
+```
+@book = Book.new
+```
+
+view中， 下面两个是相同的：
+
+```
+<%= form_for @book do |f|%>
+  <%= f.text_field :title %>
+<% end %>
+
+<%= form_tag '/books' do %>
+  <%= text_field_tag 'book[title]', '' %>
+<% end %>
+```
+
+controller:
+
+```
+@book = Book.find(3)
+```
+
+view中， 下面两个是相同的：
+
+```
+<%= form_for @book do |f|%>
+  <%= f.text_field :title %>
+<% end %>
+
+<%= form_tag '/books/3/update' do %>
+  <%= text_field_tag 'book[title]', @book.title %>
+<% end %>
+```
 
