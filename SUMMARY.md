@@ -33,7 +33,9 @@
   9. [读取HTML表单，并且在controller 中操作数据库](update_db_via_html_form.md)
   * [form 表单对象](part3_rails_premier/form_object.md)
   7. [form 自定义的标签).](form_helpers.md)
-  * [Rails服务器， thin/ nginx(差丽云)](part3_rails_premier/rails_thin_deploy.md)
+  * [Rails服务器， thin/ nginx](part3_rails_premier/rails_thin_deploy.md)
+  * [布局](part3_rails_premier/layout.md)
+  * [asset pipeline](part3_rails_premier/asset_pipeline.md)
 
   8. 把所有串起来.
   9. 各种rails的组件.
