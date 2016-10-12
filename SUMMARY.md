@@ -52,7 +52,7 @@
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * API的查看方式
-* [Rails 常用的第三方组件]
+* [Rails 常用的第三方组件](web_components/preface.md)
   * [分页: kaminari](web_components/kaminari.md)
   * [上传图片 carrierwave](web_components/carrierwave.md)
   * [即时上传 jquery-upload]
