@@ -44,6 +44,7 @@
   * [关联](part3_rails_premier/assocication.md)
   * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
+  * [调试接口的工具: POSTMan](postman.md)
   * [rails 接口](part3_rails_premier/interface_document.md)
   * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
   * [Rails 单元测试](part4_rails_advanced/rails_unit_test.md)
