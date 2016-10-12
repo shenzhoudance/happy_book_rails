@@ -84,7 +84,18 @@
 
 ## JSON入门
 
+## 知道接口与 GUI的区别。
 
+接口： 是给设备用的。
+GUI (Graphic User Interface)： 是给人用的。
+
+所以，在rails中：  有7个action:
+new, edit ... 页面，因为RAISL生成的是 GUI.
+
+对于接口： 是没有必要有 new, edit 这些内容。
+
+## 使用PostMan来进行对接口的测试。
+（见工具一章）
 
 ========================================================
 
@@ -184,6 +195,5 @@ http://域名/interface/cases/all_cases
 作业
 
 1. 写个 显示 所有的 books的接口
-2. 写个 新建/编辑 某个 book的接口。
-
+2. 写个 创建(create)/更新(update) 某个 book的接口。
 3. 新建一个git repo. 放到github 上去。
