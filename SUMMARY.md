@@ -1,4 +1,5 @@
- [前言](preface.md)
+* [方法论](methodologies.md)
+* [前言](preface.md)
   * [毕业设计](biye.md)
   * [哪些不学](part3_rails_premier/buyongxue.md)
 * [与前端相关](authentication.md)

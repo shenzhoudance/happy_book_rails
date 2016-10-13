@@ -32,7 +32,6 @@
 
 ## 从标准内容看项目
 
-
 补充：  每个插件，必然有自己的官方网站。  例如：  jquery-validate
 很有可能有个自己的独立的网站：  https://jqueryvalidation.org/
 除了官方网站， 还会有自己的github ( 源代码位置） https://github.com/jzaefferer/jquery-validation
@@ -47,6 +46,57 @@ https://jqueryvalidation.org/files/demo/
 
 http://guides.rubyonrails.org/
 http://api.rubyonrails.org/
+
+### 如果不知道官方的名字，如何找到它的官方网址呢？
+
+例如，我们在文档中，看到 一段代码：
+
+<script type="text/javascript" src="js/jquery.banner.js"></script>
+
+我们搜索  'jquery banner js' 是搜不到结果的。
+
+继续找线索，可以发现，下面有一段对于该组建的调用：
+
+```
+    $(".banner").swBanner();
+```
+
+所以， `swBanner` 就是我们要搜的内容。    "jQuery swBanner"
+然后，就可以在google中，看到： http://www.jstxdm.com/show-16-547.html
+
+居然是国内的网站。
+
+我们不知道这个东西是哪里做的。因为它： 1. 没有表示自己是该组件的官网。 2. 没有github.
+3. 没有详细的文档。 4. 还没有API。 我认为它就是个转载。
+
+但是需要确认。
+
+1. 找到demo.  (http://www.jstxdm.com/demo.php?url=http://d.jstxdm.com/upfiles/demo/2016/0307/1457351735/index.html )
+2. 看该demo 的源代码。
+3. 发现源代码如图
+
+				jQuery(".focusBox").slide({ titCell:".num li", mainCell:".pic",effect:"fold", autoPlay:true,trigger:"click",startFun:function(i){
+					jQuery(".focusBox .txt li").eq(i).animate({"bottom":0}).siblings().animate({"bottom":-36});}
+				});
+
+4. 经过我们的搜索，发现，该源代码位于： http://www.jstxdm.com/statics/jqdemo2/js/w3cer.js
+
+源代码里面定义的不是 swBanner, 而是 slider
+
+也可以从侧面看出，国内的项目，不规范， 连github都没有。 大伙不知道应该往哪里贡献代码， 那么，
+这个项目，是没有生命力的。
+
+再看jquery:
+
+```
+/*! jQuery v@1.8.0 jquery.com | jquery.org/license */
+(function(a,b){function G(a){var b=F[a]={};return p.each(a.split(s),function(a,c){b[c]=!0}
+```
+
+代码的第一行，就能看到：  项目名称 版本号， 官方， 版权声明（LICENSE) 。
+
+jquery 文档： http://contribute.jquery.org/documentation/
+api: http://api.jquery.com/
 
 ## 如何使用轮子
 
