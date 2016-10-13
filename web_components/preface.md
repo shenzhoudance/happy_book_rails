@@ -30,6 +30,24 @@
 
 我们要知道 一系列的名字，才能google 。
 
+## 从标准内容看项目
+
+
+补充：  每个插件，必然有自己的官方网站。  例如：  jquery-validate
+很有可能有个自己的独立的网站：  https://jqueryvalidation.org/
+除了官方网站， 还会有自己的github ( 源代码位置） https://github.com/jzaefferer/jquery-validation
+而且：还要有文档。 文档分成两种:
+1. 入门文档（ guides, tutorial, document ) ,例如： https://jqueryvalidation.org/documentation/
+2. API 文档（ https://jqueryvalidation.org/documentation/#link-api-documentation)
+
+还要有个DEMO：
+https://jqueryvalidation.org/files/demo/
+
+对于Rails和很多其他组件来说， 文档 跟 API 是分开的。例如：
+
+http://guides.rubyonrails.org/
+http://api.rubyonrails.org/
+
 ## 如何使用轮子
 
 1. 找到官方站点。
