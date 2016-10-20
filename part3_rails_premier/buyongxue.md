@@ -59,6 +59,21 @@ config.action_controller.permit_all_parameters = true
 
 解决办法：直接用jquery validate, 在client端进行验证。
 
+所以，每个`_form.html.erb`中的内容，都要删掉：
+
+```
+  <% if @book.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@book.errors.count, "error") %> prohibited this book from being saved:</h2>
+
+      <ul>
+      <% @book.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+```
 
 ## 关联关系。
 
