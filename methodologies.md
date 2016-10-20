@@ -278,4 +278,143 @@ response = HTTParty.get 'www.baidu.com'
 response = HTTParty.get 'http://www.baidu.com'
 
 
+## httparty , 在ruby中报错，跟在rails中报错，是不一样的。
+
+ rails增加了： 3个分类：
+ 1. Application Trace
+ 2. Framework trace
+ 3. Full trace
+
+
+ 1. Application Trace
+app/controllers/books_controller.rb:8:in `index'
+
+ 2. Framework trace (增加了好多rails 框架的出错路径）
+
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `initialize'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `open'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `block in connect'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/timeout.rb:74:in `timeout'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:878:in `connect'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:863:in `do_start'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:852:in `start'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:1375:in `request'
+ httparty (0.14.0) lib/httparty/request.rb:118:in `perform'
+ httparty (0.14.0) lib/httparty.rb:560:in `perform_request'
+ httparty (0.14.0) lib/httparty.rb:486:in `get'
+ httparty (0.14.0) lib/httparty.rb:598:in `get'
+ actionpack (4.2.1) lib/action_controller/metal/implicit_render.rb:4:in `send_action'
+ actionpack (4.2.1) lib/abstract_controller/base.rb:198:in `process_action'
+ actionpack (4.2.1) lib/action_controller/metal/rendering.rb:10:in `process_action'
+ actionpack (4.2.1) lib/abstract_controller/callbacks.rb:20:in `block in process_action'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:117:in `call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:117:in `call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:555:in `block (2 levels) in compile'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:505:in `call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:505:in `call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:92:in `_run_callbacks'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:776:in `_run_process_action_callbacks'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:81:in `run_callbacks'
+ actionpack (4.2.1) lib/abstract_controller/callbacks.rb:19:in `process_action'
+ actionpack (4.2.1) lib/action_controller/metal/rescue.rb:29:in `process_action'
+ actionpack (4.2.1) lib/action_controller/metal/instrumentation.rb:32:in `block in process_action'
+ activesupport (4.2.1) lib/active_support/notifications.rb:164:in `block in instrument'
+ activesupport (4.2.1) lib/active_support/notifications/instrumenter.rb:20:in `instrument'
+ activesupport (4.2.1) lib/active_support/notifications.rb:164:in `instrument'
+ actionpack (4.2.1) lib/action_controller/metal/instrumentation.rb:30:in `process_action'
+ actionpack (4.2.1) lib/action_controller/metal/params_wrapper.rb:250:in `process_action'
+ activerecord (4.2.1) lib/active_record/railties/controller_runtime.rb:18:in `process_action'
+ actionpack (4.2.1) lib/abstract_controller/base.rb:137:in `process'
+ actionview (4.2.1) lib/action_view/rendering.rb:30:in `process'
+ actionpack (4.2.1) lib/action_controller/metal.rb:196:in `dispatch'
+ actionpack (4.2.1) lib/action_controller/metal/rack_delegation.rb:13:in `dispatch'
+ actionpack (4.2.1) lib/action_controller/metal.rb:237:in `block in action'
+ actionpack (4.2.1) lib/action_dispatch/routing/route_set.rb:74:in `call'
+ actionpack (4.2.1) lib/action_dispatch/routing/route_set.rb:74:in `dispatch'
+ actionpack (4.2.1) lib/action_dispatch/routing/route_set.rb:43:in `serve'
+ actionpack (4.2.1) lib/action_dispatch/journey/router.rb:43:in `block in serve'
+ actionpack (4.2.1) lib/action_dispatch/journey/router.rb:30:in `each'
+ actionpack (4.2.1) lib/action_dispatch/journey/router.rb:30:in `serve'
+ actionpack (4.2.1) lib/action_dispatch/routing/route_set.rb:819:in `call'
+ rack (1.6.4) lib/rack/etag.rb:24:in `call'
+ rack (1.6.4) lib/rack/conditionalget.rb:25:in `call'
+ rack (1.6.4) lib/rack/head.rb:13:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/params_parser.rb:27:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/flash.rb:260:in `call'
+ rack (1.6.4) lib/rack/session/abstract/id.rb:225:in `context'
+ rack (1.6.4) lib/rack/session/abstract/id.rb:220:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/cookies.rb:560:in `call'
+ activerecord (4.2.1) lib/active_record/query_cache.rb:36:in `call'
+ activerecord (4.2.1) lib/active_record/connection_adapters/abstract/connection_pool.rb:649:in `call'
+ activerecord (4.2.1) lib/active_record/migration.rb:378:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:88:in `call'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:88:in `_run_callbacks'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:776:in `_run_call_callbacks'
+ activesupport (4.2.1) lib/active_support/callbacks.rb:81:in `run_callbacks'
+ actionpack (4.2.1) lib/action_dispatch/middleware/callbacks.rb:27:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/reloader.rb:73:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/remote_ip.rb:78:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/debug_exceptions.rb:17:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+ railties (4.2.1) lib/rails/rack/logger.rb:38:in `call_app'
+ railties (4.2.1) lib/rails/rack/logger.rb:20:in `block in call'
+ activesupport (4.2.1) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+ activesupport (4.2.1) lib/active_support/tagged_logging.rb:26:in `tagged'
+ activesupport (4.2.1) lib/active_support/tagged_logging.rb:68:in `tagged'
+ railties (4.2.1) lib/rails/rack/logger.rb:20:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+ rack (1.6.4) lib/rack/methodoverride.rb:22:in `call'
+ rack (1.6.4) lib/rack/runtime.rb:18:in `call'
+ activesupport (4.2.1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+ rack (1.6.4) lib/rack/lock.rb:17:in `call'
+ actionpack (4.2.1) lib/action_dispatch/middleware/static.rb:113:in `call'
+ rack (1.6.4) lib/rack/sendfile.rb:113:in `call'
+ railties (4.2.1) lib/rails/engine.rb:518:in `call'
+ railties (4.2.1) lib/rails/application.rb:164:in `call'
+ rack (1.6.4) lib/rack/lock.rb:17:in `call'
+ rack (1.6.4) lib/rack/content_length.rb:15:in `call'
+ rack (1.6.4) lib/rack/handler/webrick.rb:88:in `service'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/webrick/httpserver.rb:138:in `service'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/webrick/httpserver.rb:94:in `run'
+ /home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/webrick/server.rb:294:in `block in start_thread'
+
+
+3. fulltrace 同上， 只不过增加了application trace 的内容：
+
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `initialize'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `open'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:879:in `block in connect'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/timeout.rb:74:in `timeout'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:878:in `connect'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:863:in `do_start'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:852:in `start'
+/home/liyun/.rbenv/versions/2.2.1/lib/ruby/2.2.0/net/http.rb:1375:in `request'
+httparty (0.14.0) lib/httparty/request.rb:118:in `perform'
+httparty (0.14.0) lib/httparty.rb:560:in `perform_request'
+httparty (0.14.0) lib/httparty.rb:486:in `get'
+httparty (0.14.0) lib/httparty.rb:598:in `get'
+app/controllers/books_controller.rb:8:in `index'
+.... (以下同 framework trace )
+
+# 如何使用？
+
+我个人：
+
+1. 直接看rails 给出的提示。  （包括HTML页面的提示，和 rails server 的提示）
+
+
+```
+Completed 500 Internal Server Error in 3ms (ActiveRecord: 0.0ms)
+
+Errno::ECONNREFUSED (Connection refused - connect(2) for nil port 80):
+  app/controllers/books_controller.rb:8:in `index'
+
+  Rendered /home/liyun/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_dispatch/middleware/templates/rescues/_source.erb (4.9ms)
+  Rendered /home/liyun/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (2.0ms)
+  Rendered /home/liyun/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.8ms)
+  Rendered /home/liyun/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionpack-4.2.1/lib/action_dispatch/middleware/templates/rescues/diagnostics.html.erb within rescues/layout (17.4ms)
+```
+
+如果还没有思路， 那么直接看： full trace
 
