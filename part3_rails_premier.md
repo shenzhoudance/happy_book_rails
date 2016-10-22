@@ -531,3 +531,13 @@ slef.down:           drop table 'apples' ..
 原来的数据还能保留。
 
 如果在部署的时候发现，新的数据库结构不合理， 还能rollback回去。
+
+## 新手军规
+
+不要用 rails g 这个命令。
+
+除了migration, 无论是view, 还是controller,  还是什么，都不要用 rails generate  这个命令。
+
+对于新手来说特别重要！
+
+人肉的敲入命令，能加深大家的记忆和理解。
