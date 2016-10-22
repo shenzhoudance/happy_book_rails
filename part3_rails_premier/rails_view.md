@@ -1,8 +1,8 @@
 # 阅读本文收获
 
-知道Rails中的erb文件跟 JSP, PHP是一样的.
-知道如何使用controller中的变量
-知道partial ( 片段)
+- 知道Rails中的erb文件跟 JSP, PHP是一样的.
+- 知道如何使用controller中的变量
+- 知道partial ( 片段)
 
 # View的基本概念和用法
 
@@ -10,9 +10,10 @@ View在MVC中,一直是最简单的概念. 大家要分分钟入门.
 
 视图在Rails中, 就是 .html.erb 文件. 我们原则上把跟HTML有关的东西,都写在 视图中.
 
-每个视图都要由controller触发. 所有的视图文件,都放在: app/views/ 目录下. 例如: app/views/books/new.html.erb 这是Rails的约定 .
+每个视图都要由controller触发. 所有的视图文件,都放在: `app/views/` 目录下. 例如: `app/views/books/new.html.erb` 这是Rails的约定 .
 
 最基本用法
+
 下面是一个最简单的erb文件:
 
 ```
@@ -23,18 +24,20 @@ View在MVC中,一直是最简单的概念. 大家要分分钟入门.
 ```
 <p>当前时间: 2016-10-08 21:01:35 +0800</p>
 ```
-# <% %> 与 <%= %> 的区别
 
-<% %> 表示仅运行代码, 例如: <% a = 1 %>
-<%= %> 表示,不但运行, 而且把结果渲染到html中. 例如: <%= Time.now %>
+# `<% %>` 与 `<%= %>` 的区别
+
+`<% %>` 表示仅运行代码, 例如: `<% a = 1 %>`
+`<%= %>` 表示,不但运行, 而且把结果渲染到html中. 例如: `<%= Time.now %>`
 
 # Rails中的视图在什么时候被渲染?
 
 Rails架构： M - V - C（几乎是所有经典web项目的架构）. 其中:
 
-Model: 操作数据库。
-Controller: 把每个 "http request" 分发到对应的 "Action( method)"来处理
-View: 显示 HTML 页面。
+- Model: 操作数据库。
+- Controller: 把每个 "http request" 分发到对应的 "Action( method)"来处理
+- View: 显示 HTML 页面。
+
 所以，我们用一个例子来说明, view在哪里建立,在什么时候渲染：
 
 1.小王同学在浏览器端，输入了一个网址: http://server.com/fruits/new ，回车。(这会产生一个 "http request" , 请求方式是 GET)
@@ -46,11 +49,13 @@ Rails就会 把这个请求交给 router 来处理。
 
 3.router根据配置文件： config/routes.rb 中的配置：
 
-
+```
 Rails.application.routes.draw do
   resources :fruits # 根据这个路由配置
 end
-把这个request，分发到： fruits controller 中的 new action.
+```
+
+把这个request，分发到： `fruits` controller 中的 `new` action.
 
 4.new action 做一些 处理， 显示对应的 erb .
 
@@ -65,7 +70,7 @@ class FruitsController < ApplicationController
 end
 ```
 
-5. 上面的 new action 执行完, 会自动渲染 new.html.erb这个文件( 文件路径: app/views/books/new.html.erb )
+5. 上面的 `new` action 执行完, 会自动渲染 new.html.erb这个文件( 文件路径: `app/views/books/new.html.erb` )
 (为什么PHP 很好入门？ 就是因为，PHP 上来就让你写这个）
 
 ```
@@ -105,6 +110,7 @@ end
   copyright@2016 xx.co.ltd
 </footer>
 ```
+
 那么就把它写成一个 partial (片段）
 
 全名是: `app/views/fruits/_footer.html.erb`(注意，文件名以 "_"开头)
@@ -121,14 +127,18 @@ end
 如果，某个partial ,是需要参数的，（例如： 年份是个变量）
 
 
+```
 <!-- 下面这段是版权声明，多个页面都需要重用  -->
 <footer>
   copyright@ <%= year %>xx.co.ltd
 </footer>
+```
 那么，在调用时，就：
 
-
+```
 <%= render :partial => 'footer', :locals => {:year => 2016} %>
+```
+
 可以看到, 使用了 locals 来传递参数.
 
 ## 不要使用嵌套层次过多的 partial
@@ -188,7 +198,6 @@ my_module.say_hi
 
 # 下面,没有一个显式的caller, 那么,我们就不知道这个find_me方法定义在哪里.
 find_me
-
 ```
 
 
@@ -196,19 +205,22 @@ find_me
 # 不用学的
 其他的没讲到的，都不用学。实战中根本用不到. 或者只是增加了复杂性 . 例如：
 
-
+```
 render 'filename'
 render xxx,  :collection ...
 render xxx,  :as ...
 render xxx,  :object ...
+```
 
 # 课程的作业
 在一个视图中:
 
-显示当前时间
-在controller中定义一个变量, 然后把它在view中显示出来.
-定义一个partial, 然后在view中调用它.
-本节示例代码
+- 显示当前时间
+- 在controller中定义一个变量, 然后把它在view中显示出来.
+- 定义一个partial, 然后在view中调用它.
+
+# 本节示例代码
+
 本节中的例子，对应的源代码，可以来这里下载： https://github.com/sg552/rails_lesson_3_view
 
 本节对应的ppt, 可以来这里下载： http://siwei.me/about-me/speaks
