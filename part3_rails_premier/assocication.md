@@ -258,7 +258,7 @@ select teachers.*, students.*, lessons.*
 
 这个 复杂的SQL 会生成下面的表：
 
-teachers.id |teachers.name |students.id |students.name |lessons.id |lessons.name |lessons.student_id| lessons.teacher_id
+teachers. id |teachers. name |students. id |students. name |lessons. id |lessons. name |lessons. student_id| lessons. teacher_id
  -- | -- | -- |-- |-- |-- |--  | --
 100         |   王老师     |  1         |   小王   |      1000   |  物理成绩   |    1            |      100
 100         |   王老师     |  2         |   小明   |      2000   |  物理成绩   |    2            |      100
@@ -328,6 +328,7 @@ connection.close
 因为，这个方法，会生成一个无意义的只包含外键的中间表。  例如：
 
 表名： student_teachers
+
 student_id |  teacher_id
 -- | --
 1      |      100
@@ -355,36 +356,11 @@ student_id |  teacher_id
 
 好的名字:
 
-商品 与 顾客 的中间表是 订单
-学生 与 老师 的中间表是 课程(或成绩)
+- 商品 与 顾客 的中间表是 订单
+- 学生 与 老师 的中间表是 课程(或成绩)
 
-# 作业。
+## has_many 与 belongs_to 会自动生成一系列的方法
 
-1. 使用 mysql, mysql work bench, 创建 两个表：
-
-   妈妈表
-   孩子表。
-   妈妈 ： 孩子 =  1 ： N
-
-   插入一些数据：   王妈妈，  小李， 小明。
-
-   1.1 使用纯 SQL语句： 查询 小李的妈妈。
-   1.2 在 Rails console 中， 查询 小李的妈妈。
-
-
-2. 使用 mysql, mysql work bench, 创建 3个表：
-   2.1  students
-   2.2  teachers
-   2.3  lessons
-
-   实现：  students : teachers = n : n
-   加入若干数据。
-   然后根据 某个学生的名字，查出它的所有老师。
-   也是： 又用SQL， 又要用 Rails console来实现。
-
-## 关于级联删除
-
-删除的话，不建议使用 通过Rails 配置好的关联关系来删除。
 
 例如：
 
@@ -407,16 +383,11 @@ collection.delete(object, ...)     |   wangmama.sons.delete
 collection.destroy(object, ...)    |   wangmama.sons.destroy
 collection=objects                 |   wangmama.sons=
 collection_singular_ids            |   wangmama.son_id
-collection_singular_ids=ids					|
-collection.clear										|
-collection.empty?		|
-collection.size			|
-collection.find(...)		|
-collection.where(...)		|
-collection.exists?(...)		|
-collection.build(attributes = {}, ...) |
-collection.create(attributes = {})	|
-collection.create!(attributes = {})	|
+collection.create(attributes = {})	|  wangmama.sons.create(...)
+
+总共16个. 其他的略.
+
+不过,这些方法中,常用的只有一两个.大家可以参考文档.
 
 
 ## destroy 与 delete 区别？
@@ -500,3 +471,28 @@ A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
 但是， 保留一堆不相干的数据， 起码是不会造成系统崩溃。
 而且： 一旦实战，你会发现： 没有不相干的数据。 你以为的： 脏数据， 都有这样那样的用处。
 如果真有脏数据， 说明人的水平太差。
+
+# 作业。
+
+1. 使用 mysql, mysql work bench, 创建 两个表：
+
+   妈妈表
+   孩子表。
+   妈妈 ： 孩子 =  1 ： N
+
+   插入一些数据：   王妈妈，  小李， 小明。
+
+   1.1 使用纯 SQL语句： 查询 小李的妈妈。
+   1.2 在 Rails console 中， 查询 小李的妈妈。
+
+
+2. 使用 mysql, mysql work bench, 创建 3个表：
+   2.1  students
+   2.2  teachers
+   2.3  lessons
+
+   实现：  students : teachers = n : n
+   加入若干数据。
+   然后根据 某个学生的名字，查出它的所有老师。
+   也是： 又用SQL， 又要用 Rails console来实现。
+
