@@ -1,3 +1,2 @@
-
-使用 ruby/rails/jquery 开发web应用.
+web开发入门: 使用ruby / rails
 
