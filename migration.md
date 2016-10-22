@@ -75,25 +75,13 @@ end
 
 (因为它可以移过来，再移回去。 在不断的up/down中,数据库实现了迁移. 这就是这个名字的由来.)
 
-下面是数据库迁移的一个例子: 在某个商业项目中, 从2014年12月,到 2015年6月, 数据库的结构发生了十几次变化.
+下面是数据库迁移的一个例子: 在某个商业项目中, 从2016年2月,到 2016年9月, 数据库的结构发生了177次变化.
+
+![例子](images/真实项目中的migrations.gif)
 
 每个文件名都由两部分组成:  时间戳 + 事件.
 
 ```
-  20141207125533_create_sorts.rb
-  20141208073607_add_logo_to_sorts.rb
-  20141209021200_add_parent_id_to_sorts.rb
-  20141209063659_create_pages.rb
-  20141210111312_create_ckeditor_assets.rb
-  20150131012039_add_position_and_is_visible_to_sorts.rb
-  20150131015824_create_system_settings.rb
-  20150131021810_add_instruction_to_system_settings.rb
-  20150201013321_add_is_deletable_to_sorts.rb
-  20150316021041_create_feedbacks.rb
-  20150529075541_create_markets.rb
-  20150529075608_create_companies.rb
-  20150529080128_create_price_strategies.rb
-  20150529080631_create_market_modules.rb
   20150529080834_create_download_counts.rb
   20150529092141_create_positions.rb
   20150601090602_add_name_to_price_strategies.rb
