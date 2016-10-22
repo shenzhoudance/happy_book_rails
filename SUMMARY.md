@@ -20,8 +20,8 @@
   * [Rails 快速入门](part3_rails_premier/rails_tutorial_from_view.md)
   * [路由](part3_rails_premier/routes.md)
   * [路由-特殊情况](part3_rails_premier/routes_special.md)
-  * [rails 视图](part3_rails_premier/rails_view.md)
-  * [数据库迁移，model验证](part3_rails_premier/rails_database.md)
+  * [视图](part3_rails_premier/rails_view.md)
+  * [数据库操作:migration](migration.md)
   5. [Model入门 CRUD (只在 console模式下运行, 不涉及到form. )](crud.md)
   6. Model间的关联. (一对多, 多对多)
   7. [读数据库，显示到页面上( controller + db  小结合)](query_data_via_controller.md)
@@ -38,7 +38,6 @@
 
   * [Rails 入门](part3_rails_premier/rails_tutorial.md)
   * [关联](part3_rails_premier/assocication.md)
-  * [migration](migration.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [调试接口的工具: POSTMan](postman.md)
   * [rails 接口](part3_rails_premier/interface_document.md)

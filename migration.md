@@ -1,31 +1,55 @@
-# migration 数据迁移
+# 数据库迁移
 
 migration, 是 DB migration的缩写。 这要写起来的话，也是厚厚的一本书。
 
+## migration是什么?
 
-## 为什么要使用 migration?
+我们修改DB的时候，原始的办法是：
 
-我们修改DB的时候，原始的办法：
+1. 手动修改数据库的表Users，增加一列  name  ( 通过SQL语句: "alter table ..." )
+2. 回来修改ruby代码，调用 `User.first.name`
 
-1. 手动修改数据库的表Users，增加一列  name
-2. 回来修改ruby代码，  User.first.name
+但是，你的工作伙伴（工友们），如何知道你为某个数据库的表增加了一列呢？
 
-但是，你的工作伙伴（工友们），如何知道，你为某个数据库的表，增加了一列呢？
-难道你要求他们，也在自己的机器上做这个事儿吗？人肉做。
+如果你告诉了他要做这个事儿, 他是否要手动在自己的机器上做这个事儿吗？
 
-所以，我们要把上面的过程，自动化，可以复现。
+大家记住: 我们要把上面的过程自动化!
 
-所以：
+也就是说:
 
-使用统一的sql ， 某个人每次修改数据库表之后，都要更新这个sql文件。
-但是有缺点： 测试数据很宝贵，很多测试数据，是非常复杂的，例如：有5个表，每个表之间都有
-互相的依赖关系。 那么，一旦你的表结构变化，重新导入sql文件后，测试数据都没有了。
+整个项目组使用统一的sql ， 某个人每次修改数据库表之后，都要更新这个sql文件。
 
-所以，我们要使用ruby代码，来完成这个事儿。
+例如, 十年前很多项目都是这样:
+1. 把建表的SQL语句放到cvs/svn中.
+2. 小李如果修改了表结构, 那么就提交一个commit, 更新SQL语句
+3. 小王每次更新代码后, 都要重新把SQL文件导入到数据库中.
 
-这个ruby代码，就是migration.
+但是这样做有不小的缺点：
+
+1. 测试数据很宝贵，很多测试数据是非常复杂的，例如：有5个表，每个表之间都有互相的依赖关系。
+那么，一旦小王把数据库的表结构变化，小李重新导入sql文件后，小李本地原来的测试数据都没有了。
+重新构建测试数据又要半天.
+2. 大家不知道什么时候SQL发生了改变.
+
+所以，我们要找到一种办法来解决上面遇到的问题. 让它:
+
+1. 可以自动化的执行.
+2. 不必对现有的测试代码造成影响. (只修改应该修改的地方)
+3. 可以对数据库进行高级的操作: 例如回滚到某个时间点.
+
+这个办法, 就是 Database Migration.
+
+## Migration初体验
+
+Migration在Rails中是非常简单的. 它就是Rails的一部分.
+
+在Rails中, 所有的migration, 都是用命令 `rails generate migration`创建出来的.
+它位于 `db/migrate`目录下.
+
+下面是一个最简单的migration 的例子:
 
 ```
+# db/migration/20161021103259_create_books.rb
 class CreateBooks < ActiveRecord::Migration
   def self.up
     create_table :books do |t|
@@ -41,16 +65,19 @@ class CreateBooks < ActiveRecord::Migration
 end
 ```
 
-上面代码，创建了一个migration, 每个migration, 都有2个方法.
+上面代码，代表了一个migration. 叫做: `CreateBooks`.
 
-- up
-- down
+每个migration, 都有2个方法.  `up`和`down`.
 
-为啥叫迁移？  因为它可以移过来，再移回去。
 
-up ：  就是从过去，往未来的时间方向上发展
-down:  在时间上倒退。
+- up ：  就是从过去，往未来的时间方向上发展
+- down:  在时间上倒退。
 
+(因为它可以移过来，再移回去。 在不断的up/down中,数据库实现了迁移. 这就是这个名字的由来.)
+
+下面是数据库迁移的一个例子: 在某个商业项目中, 从2014年12月,到 2015年6月, 数据库的结构发生了十几次变化.
+
+每个文件名都由两部分组成:  时间戳 + 事件.
 
 ```
   20141207125533_create_sorts.rb
@@ -72,17 +99,18 @@ down:  在时间上倒退。
   20150601090602_add_name_to_price_strategies.rb
 ```
 
-所以，当团队中，任意一个新手，加入的话，不需要你提供给他任何sql文件。让他直接运行
-` rake db:migrate `就可以了。
+所以，当团队中，任意一个新手，加入的话，不需要你提供给他任何sql文件。让他直接运行 `$ rake db:migrate `就可以了。
 
-我也可以使用 rake db:rollback 回退到任意时刻。
+我也可以使用 `rake db:rollback` 回退到任意时刻。
 
 所以，可以认为，migration 是衡量一个项目的水平的重要指标。 如果一个项目，没有migration的话
-那么，这个项目就特别难于开发：
+
+那么，这个项目就特别难于开发. 原因在于：
 
 - 数据库结构难以获取
 - 开发成员之间的表结构难以统一。
 
+所以, 数据库迁移是极其重要的.
 
 ## 使用原则
 
@@ -97,7 +125,12 @@ down:  在时间上倒退。
   - 删除列
 - migration 一旦创建好，并且上传到了远程服务器，就绝对不能做改动。
 
-例如：我想新建一个表users, 它有个属性： name, age
+## 例子
+
+### 创建
+例如：我想新建一个表`users`, 它有个属性： `name`, `age`
+
+就通过`rails generate migration` 命令创建:
 
 ```
 $ bundle exec rails g migration create_users
@@ -105,34 +138,52 @@ $ bundle exec rails g migration create_users
       create    db/migrate/20160308125025_create_users.rb
 ```
 
+可以看到,上面的命令, 建立了文件:  `db/migrate/20160308125025_create_users.rb`
+
+打开这个文件, 并且编辑它的内容, 如下:
+
 ```
 class CreateUsers < ActiveRecord::Migration
+
   def self.up
 
+    # 建立 users 表
     create_table :users do |t|
+
+      # 建立列: name, 类型是string
       t.string :name
+
+      # 建立列: age, 类型是 integer
       t.integer :age
 
+      # 建立created_at 与 updated_at , 类型都是 datetime
       t.timestamps
     end
   end
 
   def self.down
-    drop_table :books
+
+    # 删掉 users 表
+    drop_table :users
   end
 end
 ```
 
-( 如果你用rails 4.x 来创建的话，得到的migration ,一般没有up, down 方法。因为，rails
-非常智能，能自动的，把 up, down方法合并成： change )
+### up/down 与 change的区别.
 
-例如，如果我的up 方法中，是create_table, add_column, 那么，rails就会自动判断出，在down
- 方法中，就用  drop_table, remove_column 。
+(如果你用rails 4.x 来创建的话，得到的migration ,一般没有up, down 方法。因为，rails
+非常智能，能自动的，把 up, down方法合并成： change
 
-但是，还是有些时刻，rails无法自动判断up/down, 例如： 改变某个列的类型。这个时候，还的
-使用经典的 up/down方法。
+例如，如果`up`方法中，是`create_table`, 那么，rails就会自动判断出，在`down` 方法中，就用`drop_table`。
 
-运行 rake db:migrate:
+但是，还是有些时刻，rails无法自动判断`up/down`, 例如： 改变某个列的类型。这个时候，还的
+使用经典的 `up/down`方法。
+
+对于新手, 建议使用 `up/down` 方法.免得被 `change` 弄糊涂.)
+
+### 运行 rake db:migrate
+
+接下来, 运行 `rake db:migrate`:
 
 ```
 $ bundle exec rake db:migrate
@@ -142,10 +193,11 @@ $ bundle exec rake db:migrate
 == 20160308125025 CreateUsers: migrated (0.0079s) =============================
 ```
 
-所以， 使用 sqlite3 命令，打开这个数据库，发现，数据库中，新增了一个表 users.
+我们打开这个数据库，发现数据库中，新增了一个表 `users`.
+
 ```
 sqlite> .tables
-books              schema_migrations  users
+schema_migrations  users
 ```
 
 ## 回滚
@@ -158,21 +210,23 @@ $ bundle exec rake db:rollback
 == 20160308125025 CreateUsers: reverted (0.0068s) =============================
 ```
 
-可以看到，table中就少了：users
+可以看到，table中就少了：`users`
 
 ```
 sqlite> .tables
-books              schema_migrations
+schema_migrations
 ```
 
-那么，剩余表中有个表，比较奇怪：  schema_migrations, 这个是干嘛的呢？
 
 ## schema_migrations
 
-专门记录当前数据库的 迁移 ID 是多少。 rails就是通过比较它和 db/migrate 中文件的差异，
-来判断，当前的rails，的数据库，是否是最新的。
+可能有的同学会比较奇怪： `schema_migrations`, 这个是干嘛的呢？
 
-运行 create users 这个migration之前：
+这个表专门记录当前数据库的 "迁移ID" 是多少。 Rails就是通过比较它和 `db/migrate` 中文件的差异来判断，
+当前的rails，的数据库，是否是最新的。
+
+例如, 运行 `CreateUsers` 这个migration之前：
+
 ```
 sqlite> select * from schema_migrations;
 20151023070737
@@ -186,7 +240,7 @@ sqlite> select * from schema_migrations;
 20160308125025
 ```
 
-多出来的一行：  "20160308125025" , 刚好，就是我们新建的migration :
+多出来的一行：  `20160308125025` , 刚好就是我们新建的migration :
 `20160308125025_create_users`名字的一部分。
 
 
@@ -194,47 +248,62 @@ sqlite> select * from schema_migrations;
 
 错误的做法：
 
-1. rake db:rollback
-2. 修改 20160308125025_create_users 这个rb 文件的内容。
+1. 运行回滚操作: `rake db:rollback`
+2. 修改migration文件的内容。 在其中增加 `change_column`方法. (具体代码略)
+3. `$ rake db:migrate`
 
-绝对错误！因为，记住： 一旦创建好的migration文件（特别是已经提交到了远程的话），就绝对
-不要去修改它！
+绝对错误！因为，记住： 一旦创建好migration文件（特别是已经提交到了远程的话），就绝对不要去修改它！
 
 正确的做法是：
 
-1. 新建个migration
+1. 新建个migration.
 2. 运行它
 
-
+### 丽人姿
 例如，我想把  age 列，改名字，改成： nian_ling,   我应该：
 
-- bundle exec rails g migration rename_age_to_nian_ling_from_users_table
-  - 这里的migration的命名，不是特别严格的。不会引起错误。但是原则上，migration 要：
-看到名字，就能知道它是做什么的。 例如： createxxx,  remove_xxx_from_yyy,
-  ```
-  $ bundle exec rails g migration rename_age_to_nian_ling_from_users
-        invoke  active_record
-        create    db/migrate/20160308130535_rename_age_to_nian_ling_from_users.rb
-  ```
-- 再编辑上面命令，产生的文件。
-  ```
-  class RenameAgeToNianLingFromUsers < ActiveRecord::Migration
-    def change
-      # 下面这句是新增的
-      rename_column :users, :age, :nian_ling
-    end
+1. 运行命令:
+
+`$ bundle exec rails g migration rename_age_to_nian_ling_from_users_table`
+
+这里的migration的命名，不是特别严格的。不会引起错误。但是原则上，migration 要看到名字，
+就能知道它是做什么的。 例如：
+
+- create_users: 创建users 表
+- remove_name_from_users: 从users表中删掉 name列.
+
+然后得到结果.
+```
+$ bundle exec rails g migration rename_age_to_nian_ling_from_users
+      invoke  active_record
+      create    db/migrate/20160308130535_rename_age_to_nian_ling_from_users.rb
+```
+
+2. 编辑上面命令，产生的文件。
+
+```
+# db/migrate/20160308130535_rename_age_to_nian_ling_from_users.rb
+class RenameAgeToNianLingFromUsers < ActiveRecord::Migration
+  def change
+
+    # 手动增加下面这行代码:
+    rename_column :users, :age, :nian_ling
   end
-  ```
-- 再运行 rake db:migrate
-  ```
+end
+```
+
+3. 运行 `rake db:migrate`
+
+```
 $ bundle exec rake db:migrate
 == 20160308130535 RenameAgeToNianLingFromUsers: migrating =====================
 -- rename_column(:users, :age, :nian_ling)
-   -> 0.0111s
+ -> 0.0111s
 == 20160308130535 RenameAgeToNianLingFromUsers: migrated (0.0112s) ============
-  ```
+```
 
-就能够看到，
+就能够看到，schema_migrations 表中,增加了一条记录, 就是我们刚才运行的migration的时间戳.
+
 ```
 sqlite> select * from schema_migrations;
 20151023070737
@@ -242,12 +311,19 @@ sqlite> select * from schema_migrations;
 20160308130535
 ```
 
-并且， users中，age列变成了 nian_ling列。
+并且， `users`表中，`age`列变成了 `nian_ling`列。
 
 ```
 sqlite> .schema
 ...
-CREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "nian_ling" integer, "created_at" datetime, "updated_at" datetime);
+CREATE TABLE "users" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "name" varchar(255),
+    "nian_ling" integer,
+    "created_at" datetime,
+    "updated_at" datetime
+);
 sqlite>
 
 ```
+
