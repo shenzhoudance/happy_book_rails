@@ -24,7 +24,7 @@
   * [Migration 数据库迁移](migration.md)
   * [Model: CRUD ](crud.md)
   * [Model: 关联](part3_rails_premier/assocication.md)
-  * [读数据库，显示到页面上( controller + db  小结合)](query_data_via_controller.md)
+  * [M + V + C 小结合](query_data_via_controller.md)
   * [controller读取request 的参数](read_parameters_via_controller.md)
   * [读取HTML表单，并且在controller 中操作数据库](update_db_via_html_form.md)
   * [form 表单对象](part3_rails_premier/form_object.md)
