@@ -41,11 +41,52 @@ migration, 是 DB migration的缩写。 这要写起来的话，也是厚厚的�
 
 ## Migration初体验
 
+
 Migration在Rails中是非常简单的. 它就是Rails的一部分.
 
 在Rails中, 所有的migration, 都是用命令 `rails generate migration`创建出来的.
 它位于 `db/migrate`目录下.
 
+在使用Migration之前,要先配置好数据库
+
+### 配置MYSQL数据库
+
+1.使用 config/database.yml 来连接mysql:
+
+```
+development:
+  adapter: mysql2
+  database: db_name_dev
+  username: koploper
+  password:
+  host: localhost
+```
+
+2.修改 Gemfile, 增加：
+
+```
+gem 'mysql2', '0.3.17' （如果你的Rails也是 4.2.x 的话）
+```
+
+2.1 对于Linux, 要使用下面的命令安装好第三方包.
+
+```
+ $ sudo apt-get install libmysqlclient-dev
+```
+
+3.安装好各种gem:
+
+`$ bundle install`
+
+4.创建数据库:
+
+`$ bundle exec rake db:create`
+
+### 配置SQLite数据库
+
+默认Rails 就带了. 略.
+
+### 开始Migration
 下面是一个最简单的migration 的例子:
 
 ```

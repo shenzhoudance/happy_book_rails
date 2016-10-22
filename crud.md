@@ -325,6 +325,128 @@ Book.where('title like "5%"').order('title desc') # 根据title倒序
 TODO 补充
 
 
+## 与hibernate的比较
+
+Hibernate是 持久层的 java世界的鼻祖. 2003年出现. 它的用法可以归纳为下面三个步骤:
+
+1.声明一个大的配置文件, 定义好了数据库的连接方式.
+```
+
+<hibernate-configuration>
+   <session-factory>
+   <property name="hibernate.dialect">
+      org.hibernate.dialect.MySQLDialect
+   </property>
+   <property name="hibernate.connection.driver_class">
+      com.mysql.jdbc.Driver
+   </property>
+
+   <!-- List of XML mapping files -->
+   <mapping resource="Employee.hbm.xml"/>
+
+</session-factory>
+</hibernate-configuration>
+```
+
+这个在Rails中,是 `config/database.yml`文件, 例如:
+
+```
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: root
+  password:
+
+development:
+  <<: *default
+  database: tuling
+test:
+  <<: *default
+  database: tuling_test
+production:
+  <<: *default
+  database: tuling
+
+```
+
+2.为每一个表,都要声明一个配置文件(XML), 例如:
+
+```
+<hibernate-mapping>
+    <class name="Employee" table="EMPLOYEE">
+        <meta attribute="class-description">
+        This class contains the employee detail.
+        </meta> <id name="id" type="int" column="id">
+        <generator class="native"/>
+        </id>
+        <property name="firstName" column="first_name" type="string"/>
+    </class>
+</hibernate-mapping>
+```
+
+这个在Rails中没有.
+
+3.为每一个数据库的表,都要声明一个java class:
+
+```
+/**
+ * @doclet table='employees'
+ */
+public class Employee {
+   private int id;
+   /**
+    *  @doclet column = 'first_name'
+    */
+   private String firstName;
+   private String lastName;
+   private int salary;
+
+   public Employee() {}
+   public Employee(String fname, String lname, int salary) {
+      this.firstName = fname;
+      this.lastName = lname;
+      this.salary = salary;
+   }
+   public int getId() {
+      return id;
+   }
+   public void setId( int id ) {
+      this.id = id;
+   }
+   public String getFirstName() {
+      return firstName;
+   }
+   public void setFirstName( String first_name ) {
+      this.firstName = first_name;
+   }
+   // ...
+}
+```
+可以看出, 要做一个映射,Hibernate需要两个文件: java class, xml. 很麻烦.
+
+Rails只要两行代码:
+
+```
+class Employee < ActiveRecord::Base
+end
+```
+
+## 总结: 如何在Rails中实现 数据库的映射呢？
+
+Rails中声明持久层极其简单:
+
+如果你的表，名字叫：  teachers, 那么，就在
+app/models 目录下，新建一个rb文件：  teacher.rb
+
+```
+class Teacher < ActiveRecord::Base
+end
+```
+
+然后就可以在 Rails console中调用这个 teacher了。
+
+
 # 作业：
 
 1. 在console下面， 实现book表的增删改查。
