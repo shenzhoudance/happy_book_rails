@@ -772,18 +772,24 @@ id,   name
 
 区别:
 
-1. form helper:
+1.`form helper`:
 
+```
   <%= f.text_field :title %>
+```
 
-  1.1. 需要与 form object ( <%= form_for @book do |f| %>  .. .<% end %> )配合使用。
-  1.2  它的name 是自动生成的。 例如：  name="student[age]"
-      student 必须是 某个 class的  instance
-      并且， age 必须是form object的方法（也就是 数据库的列。)
+1.1. 需要与 form object ( `<%= form_for @book do |f| %>  .. .<% end %>` )配合使用。
+1.2  对于生成的`<input type='text' name="student[age]"/>`中,
+  它的`name` 是自动生成的。 例如：  `name="student[age]"`
+    `student` 必须是某个model的实例
+    并且， `age` 必须是form object的方法（也就是 数据库的列。)
+
   优点： 可以简化我们对表单项的操作。（例如： 下拉单 或 文本框的 默认值）
 
-2. form tag helper:
+2.`form tag helper`:
+```
   <%= text_field_tag 'my_title' %>
+```
 
   2.1 可以独立使用。 跟表单对象无关。
   2.2 名字可以随意取。 name='abc'
@@ -793,30 +799,38 @@ id,   name
 
 例如：
 
+```
   <%= f.submit "OK"%>
   <%= submit_tag "OK" %>
+```
 
 都会生成：
+```
 <input type="submit" name="commit" value="OK">
+```
 
 例子2：
 
+```
   <%= f.text_field :title %>
   <%= text_field_tag 'article[title]' %>
+```
 
 都会生成：
 
+```
   <input type="text" name="article[title]" id="article_title">
+```
 
-
-所以说， form helper 与 form tag helper 都是一样的。 一个东西。写法不同。
+所以说， `form helper` 与 `form tag helper` 都是一样的。 一个东西。写法不同。
 
 甚至， 我们在API文档上，都可以看到Rails 作者，告诉我们：
 
 form helper: http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html
+
 form tag helper: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html
 
-中，都可以看到， xx_field 的文档中，会说： 请参考  xx_field_tag . 例如：
+都可以看到， xx_field 的文档中，会说： 请参考  xx_field_tag . 例如：
 
 time_field 中：
 ```
@@ -832,49 +846,65 @@ http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-l
 
 api 中写着：
 
+```
 text_field(object, method, options={})
+```
 
 实际问题来了：
-(前提： @article 是在 controller中定义好的）
-下面，两个input， 是一样的。
+(前提： `@article` 是在 controller中定义好的）
+下面，两个`input`， 是一样的。
+
+```
 <%= form_for @article do |f| %>
-  title: <%= f.text_field :title %><br/>  # 大家都使用这个写法！
-  <%= text_field :article, :title %>      # 忘掉这个api 中的写法。
+  title: <%= f.text_field :title %>
+  <%= text_field :article, :title %>
 end
+```
 
-都会生成： <input type="text" name="article[title]" id="article_title">
+都会生成：
 
-但是，实战当中， 我们都是用 f.text_field('method') 这样的 简写形式。
-不会使用 text_field('object', 'method') 这样的形式
+```
+<input type="text" name="article[title]" id="article_title">
+```
+
+但是，实战当中， 我们都是用 `f.text_field('method')` 这样的 简写形式。
+不会使用 `text_field('object', 'method')` 这样的形式
 
 API 那样写，是因为在API文档中没有上下文。 所以它那么表示的。（深层会有很多逻辑，很多
 动态生成的代码，我们不考虑）
 
 ## 第二个提示（内容与上面的可能重复）
+
+```
 <%= form_for @article do %>
+```
 
 等同于：
 
 两个形式：
 
 1.(@article 是 Article.new的时候）
+```
 <%= form_for :article , :url => article_path, :method => 'post'  do %>
+```
 
 2. (@article 是 Article.find(2)的时候）
+```
 <%= form_for :article , :url => update_article_path(:id => 2), :method => 'put'  do %>
+```
 
 注意：
 
-1. 忘掉   form_for :xx 的形式， 使用 form_for @xx .
-2. 只要当前操作与 数据库有关系，那么就用  form_for ，会让你特别省力。  除非有必要，才
-使用  form_tag
+1. 忘掉   `form_for :xx` 的形式， 使用 `form_for @xx` .
+2. 只要当前操作与 数据库有关系，那么就用  `form_for` ，会让你特别省力。  除非有必要，才
+使用  `form_tag`
 例如：
 
-form_for  对应：  创建， 更新操作。
-form_tag  对应：  某个列表页的搜索。
+`form_for`  对应：  创建， 更新操作。
+`form_tag`  对应：  某个列表页的搜索。
 
 
-# form_for 与 form_tag 的区别和联系
+## `form_for` 与 `form_tag` 的区别和联系
 
 controller:
 
