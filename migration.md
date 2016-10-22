@@ -51,7 +51,7 @@ Migration在Rails中是非常简单的. 它就是Rails的一部分.
 ```
 # db/migration/20161021103259_create_books.rb
 class CreateBooks < ActiveRecord::Migration
-  def self.up
+  def up
     create_table :books do |t|
       t.string :title
 
@@ -59,7 +59,7 @@ class CreateBooks < ActiveRecord::Migration
     end
   end
 
-  def self.down
+  def down
     drop_table :books
   end
 end
@@ -145,7 +145,7 @@ $ bundle exec rails g migration create_users
 ```
 class CreateUsers < ActiveRecord::Migration
 
-  def self.up
+  def up
 
     # 建立 users 表
     create_table :users do |t|
@@ -161,7 +161,7 @@ class CreateUsers < ActiveRecord::Migration
     end
   end
 
-  def self.down
+  def down
 
     # 删掉 users 表
     drop_table :users
@@ -259,10 +259,10 @@ sqlite> select * from schema_migrations;
 1. 新建个migration.
 2. 运行它
 
-### 丽人姿
+### 例子
 例如，我想把  age 列，改名字，改成： nian_ling,   我应该：
 
-1. 运行命令:
+1.运行命令:
 
 `$ bundle exec rails g migration rename_age_to_nian_ling_from_users_table`
 
@@ -279,7 +279,7 @@ $ bundle exec rails g migration rename_age_to_nian_ling_from_users
       create    db/migrate/20160308130535_rename_age_to_nian_ling_from_users.rb
 ```
 
-2. 编辑上面命令，产生的文件。
+2.编辑上面命令，产生的文件。
 
 ```
 # db/migrate/20160308130535_rename_age_to_nian_ling_from_users.rb
@@ -292,7 +292,7 @@ class RenameAgeToNianLingFromUsers < ActiveRecord::Migration
 end
 ```
 
-3. 运行 `rake db:migrate`
+3.运行 `rake db:migrate`
 
 ```
 $ bundle exec rake db:migrate
@@ -325,5 +325,71 @@ CREATE TABLE "users" (
 );
 sqlite>
 
+```
+
+### 常见的migration方法
+
+注: 以下方法都写在`up`, `down` 或者`change`方法中.
+
+- create_table
+
+例如, 创建表 'students' :
+
+```
+create_table :students do |t|
+  t.string :chinese_name
+  t.integer :age
+  t.timestamps
+end
+
+```
+
+- drop_table
+
+例如,删掉表'students' :
+
+```
+drop_table :students
+```
+
+- add_column
+
+例如, 向'students' 表中,增加一个列'name', 它的类型是字符串:
+
+```
+add_column :students, :name, :string
+```
+
+- remove_column
+
+例如, 从'students' 表中,删除列'name':
+
+```
+remove_column :students, :name
+```
+
+- rename_column
+
+例如, 把'students' 表的'chinese_name'列, 重命名为 'zhong_wen_ming_zi':
+
+```
+rename_column :students, :chinese_name, :zhong_wen_ming_zi
+```
+
+- add_index
+
+例如, 把'students'表的name列建立索引:
+
+
+```
+add_index :students, :name
+```
+
+- remove_index
+
+例如, 把'students'表的已经存在的name索引删掉:
+
+```
+remove_index :students, :name
 ```
 
