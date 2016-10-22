@@ -1,74 +1,87 @@
 #  form 与 表单对象。
 
-提示：
+前方高能：
+
 1. 本节内容比较多。比较烧脑。大家要务必作作业。不动手，学不会。
-2. 多看官方文档：
-英文： http://guides.rubyonrails.org/form_helpers.html
-中文： http://guides.ruby-china.org/form_helpers.html
-也可以看API中的文档（写的也特别细）
+2. 关于提到的各种helper, 多看官方文档：
+
+- 英文： http://guides.rubyonrails.org/form_helpers.html
+
+- 中文： http://guides.ruby-china.org/form_helpers.html
+
+- 也可以看API中的文档（写的也特别细）
 http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
 
-目录：
+## 目录：
+
 1. 十年前的  form 表单，在后台是如何处理的。
 2. 演进过程。
 3. 表单对象的优缺点，好处
 
-复习： 浏览器，传数据给服务器，能传几种数据类型？
+## 复习： 浏览器，传数据给服务器，能传几种数据类型？
 
-1. /some_url?a=123
- 字符串： a = '123'
+三种.
 
-2. /some_url?a[]=1&a[]=2&a[]=3
-数组： a = ['1', '2', '3']
+1.字符串.例如:  `/some_url?a=123`
 
+`a = '123'`
+
+2.数组. 例如: `/some_url?a[]=1&a[]=2&a[]=3`
+
+可以知道, `a = ['1', '2', '3']`
+
+对于Rails的Controller, 可以处理为:
+
+```
 Started GET "/books?a[]=1&a[]=2&a[]=3" for 127.0.0.1 at 2016-10-06 15:48:10 +0800
 Processing by BooksController#index as HTML
   Parameters: {"a"=>["1", "2", "3"]}
+```
+可以看到 Rails中, 也是一样处理的.
 
+3.Hash. 例如:
 
-3. /some_url?student[name]=jim&student[age]=20
-hash:  student = { name: "jim", age: "20" }
+`/some_url?student[name]=jim&student[age]=20`
 
+`student = { name: "jim", age: "20" }`
+
+对于Rails的日志:
+
+```
 Started GET "/books?student[name]=jim&student[age]=20" for 127.0.0.1 at 2016-10-06 15:48:52 +0800
 Processing by BooksController#index as HTML
   Parameters: {"student"=>{"name"=>"jim", "age"=>"20"}}
+```
 
-
-TODO: 把下面的放到文章前面。
-### 表单对象  form-object?
-
-
-## http 参数 和请求方式
-
-get请求： 把参数放到url中。参数可以有不同的形式。
-又可以是数组，又可以是普通的字符串，又可以是一个hash.
-(当然，里面所有的值，都是 String)
-
-<a href='ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content''>...</a>
-GET     ooxx.html?a=1&b=2&ids[]=3&ids[]=4&post[title]='some_title'&post[content]='some_content'
-  # a = "1", b = "2" ( 普通参数）
-  # ids = ["3","4"]  (数组）
-  # hash 对象参数
-  # post =  { 'title':'some_title', content: 'some_content'  }
+以上形式, 对于所有类型的http request都使用.
 
 如果我要发起一个POST 请求
-POST    ooxx.html      (form)
-把参数放到表单中。
+```
+POST    /ooxx.html      (form)
+```
+就要参数放到form 表单中。
 
+```
 <form action='ooxx.html' method=POST>
   <input name='a' value='1'/>
   <input name='b' value='1'/>
   ....
 </form>
+```
 
-如果我有一个对象，叫  article(中文名： 帖子）,  它有两个属性：  title, content.
+如果我有一个对象，叫  article(中文名： 帖子）,  它有两个属性：  `title`, `content`.
 
 那么，我们在Rails中，约定， 对应的html表单，就应该写成：：
+
 ```
 <form action='/articles'  method='post' >
   <input type='text' name='article[title]' value= '我是标题' />
   <input type='text' name='article[content]' value= '我是正文' />
 </form>
+```
+
+这样, 我们传到服务器端的参数, 就是:
+
 ```
 {
     article: {
@@ -76,15 +89,16 @@ POST    ooxx.html      (form)
         content: "我是正文"
     }
 }
+```
 
-这样，就可以很方便的让我们后端的代码来处理。后端代码可以非常的简单的
+于是，就可以很方便的让我们后端的代码来处理。后端代码可以非常的简单的
 把上面的hash转换成对应的对象。
 
 
 rails是可以自动分辨, 某个参数的值，是：  字符串，数组， 还是hash
+```
 <form action='..' method='..'>
-   <input type='text' name='article[title]'/>        params[:article][:title]
-   <input type='content' name='article[content]'/>   params[:article][:content]
+   <input type='text' name='article[title]' value='三体'/>        params[:article][:title]  => '三体'
 
    <input type='text' name='colors[]' value='green'/>
    <input type='text' name='colors[]' value='red'/>
@@ -94,23 +108,28 @@ rails是可以自动分辨, 某个参数的值，是：  字符串，数组， �
    <input type='text' name='article[readers][]' value='lilei'/>
                                                      params[:article][:readers] => ["jim", "lilei"]
 
+</form>
+```
+
+上面的form表单, 传递的参数, 实际上是一个大hash, 形如:
+
+```
   {
      article: {
+        title: '三体',
+        colors: ['green', 'red', 'yellow'],
         readers : [
           "jim",
           "lilei"
         ],
      }
   }
-
-</form>
+```
 
 (也可以在hash里面，放数组，再放hash, 再数组。 总之，可以各种混用。
 但是： 实际工作中，不要这样用。会被同事骂。 也会把自己绕蒙）
-实战时： 就用最基本的3种形式就可以。
 
-TODO 再往前面放
-# 10年前 de java代码：
+# 于是,我们从十年前,比较原始的web开发时代开始说起.
 
 对于下面的这个表单：
 ```
@@ -119,14 +138,20 @@ TODO 再往前面放
   <input type='text' name='article[content]' value= '我是正文' />
 </form>
 ```
+
+它传给后端的值也就是:
+
+```
 {
     article: {
         title: "我是标题",
         content: "我是正文"
     }
 }
+```
 
 10 年前的java代码，是如何处理的呢？
+
 ```java
 // request 是 一个内置的对象
 // step1. 获取浏览器传过来的所有参数
@@ -142,10 +167,13 @@ article.setContent(content);
 article.save();
 ```
 
-## 问题就出现了:  对象的属性越多，传递过来的参数就越多，上面的赋值语句就越多。
-我曾经见过 有20行语句， 都是： request.getParameter('...')
+## 问题就出现了: 一个form 表单有很多个参数怎么办?
 
-所以，解决方法：  使用表单对象。
+对象的属性越多，传递过来的参数就越多，上面的赋值语句就越多。
+
+我曾经见过 有20行语句， 都是： `request.getParameter('...')`
+
+所以，解决方法：  使用表单对象 `form object`。来对这么多个参数进行封装.
 
 最开始的表单对象： 需要手动创建一个object:
 
@@ -154,7 +182,6 @@ article.save();
 
 (java struts框架的里面的 臭名昭著的东东, 2005年)
 ```
-
 class Article {
   private String title;
   private String content;
@@ -167,25 +194,30 @@ class Article {
 
 所以这就尴尬了：  表单对象，跟数据库的ORM对象，一模一样。导致了同样的代码出现在了 两个文件当中。
 
-## 插一嘴：  做ORM操作时， 内心要知道3个东东：
+## 知识点: 使用ORM后,做数据库操作时, 有三个层次要参与:
 
 1.  form object
 2.  ORM model
 3.  数据库table
 
-以上面的  article 为例子。  有两个属性：  title, content.
+以上面的  `article` 为例子。  有两个属性：  `title`, `content`.
 
 纯HTML   |  form object  |  ORM model  |  DB TABLE
 ------- | ---- | ---- | ---
-1. 纯html
+
+###  1. 纯html
+
 rails是可以自动分辨, 某个参数的值，是：  字符串，数组， 还是hash
+```
 <form action='..' method='..'>
    <input type='text' name='article[title]'/>        params[:article][:title]
    <input type='content' name='article[content]'/>   params[:article][:content]
 </form>
+```
 
-2. form object:  在rails中是隐形的。你看不到它的声明。因为：它是在运行时，被
-rails中的某些方法动态创建的。
+### 2. form object:
+
+在rails中是隐形的。你看不到它的声明。因为：它是在运行时，被rails中的某些方法动态创建的。
 
 p.s. 动态创建方法的例子（javascript)
 
@@ -199,7 +231,8 @@ hi()  # =
 
 (在其他语言和框架中，这个对象，都是 显式 声明的（你的手写出来）, 在struts中就要这样）
 
-rails中， 动态创建的form object, 看起来是这样：
+rails中， 动态创建的form object, 理论上是这样：
+(form 中包含什么参数, 或者说数据库中有多少列, 就有多少attribute)
 
 ```
 class Article
@@ -208,27 +241,39 @@ class Article
 end
 ```
 
+# 通过 form_for 来使用表单对象.
+
 所以，rails中， form 就要这样写：
 
 ```
-<% form_for @aritcle  do  |f| %>
+<% form_for @aritcle do |f| %>
   <%= f.text_field :title %>
   <%= f.text_field :content %>
 <% end %>
 
 ```
-上面的重点，在于：  do ... end.  可以看出， rails 是如何调用 上面的隐形的表单对象的。
+上面的重点，在于：  `do ... end`.  它说明了rails 是如何调用 上面的隐形的表单对象的。
 
+
+这一句:
+
+```
   <%= f.text_field :title %>
+```
 
-就是调用了 上面的  attr_accessor :title,
-content 同理。
+就是调用了 上面的 `Article`的 `attr_accessor :title`.
 
- 编辑 article的时候， 要显示原来的值， 就是： article.get_title
- 保存 article的时候， 要保存传过来的值，就是：  article.title=
+如果说`article` 是个表单对象的话,
 
+- 编辑 article的时候， 要显示原来的值， 就是： `article.get_title`
+- 保存 article的时候， 要保存传过来的值，就是：  `article.title=`
 
-3. ORM model.
+在上面的 `do |f| ... end`中, 这个`f` 就是表单对象.
+
+`f.text_field :title` 不但会生成一个`<input type='text' />`标签,而且还会通过调用表单对象的 `.get_title` 方法,
+来为这个`<input/>`标签设置初始值.
+
+### 3. ORM model.
 
 app/models 目录下的article.rb：
 ```
@@ -238,19 +283,24 @@ end
 ```
 
 (也可以认为， 在Rails中， ORM model 跟 form object model 是一个文件。
-4. DB table:
 
-articles:
-第一个列：  title
-第二个列：  content
+### 4. DB table:
 
+|articles表:|
+|--|
+|第一个列：title|
+|第二个列：content|
+
+
+## 表单对象与持久层,在Rails中是一个.
 
 1. 表单对象（处理表单代码时, 把参数保存到 对象中）
 2. 持久层（把对象中的数据保存到DB）
 
 在rails中这两个是一样的东东。
 
-##
+## 使用Hash为Model赋值.
+
 Rails形式： 它的宗旨就是 方便程序员， 对人友好：
 
 回到刚才的java代码： 可以看到，给对象的赋值是一个一个来的：
@@ -272,7 +322,9 @@ article.setContent(content);
 article.save();
 ```
 
-演变1： (一个属性一个属性的赋值) 该写法常见于： 从java转行过来的rails程序员。
+### 演变1： (一个属性一个属性的赋值)
+
+该写法常见于： 从java转行过来的rails程序员。
 
 ```ruby
 article = Article.new({
@@ -282,23 +334,25 @@ article = Article.new({
 article.save  # 在这里执行  insert into articles values (...)
 ```
 
-演变2：(直接给构造函数一个hash , 再save)
+### 演变2：(直接给构造函数一个hash , 再save)
 
 ```
 article = Article.new params['article']
 article.save
 ```
 
-演变3：(把 new ... save 的步骤, 省略成: create )
+### 演变3：(把 `new ... save` 的步骤, 省略成: `create`)
 
 ```
 Article.create params['article']
 ```
 
 
-引申： java 与 ruby的不同（  语言能力上的，特别是元编程的不同）
+## 引申： java 与 ruby的不同（  语言能力上的，特别是元编程的不同）
 
-# model: 声明:  ( articles 表， 有两个列：  title, content)
+# 对于持久层的model 声明:
+
+我们假设`articles` 表， 有两个列：  `title`, `content`:
 
 ```
 class Article < ActiveRecord::Base
@@ -309,11 +363,11 @@ end
 
 ```
 article = Article.create ...
-article.title  # => 'ooxx'
-article.content # => 'ooxx'
+article.title   # => 获得title
+article.content # => 获得content
 ```
 
-// java代码：
+java代码则是任何方法都要手写：
 
 ```
 public Article extends ...{
@@ -323,7 +377,10 @@ public Article extends ...{
 }
 ```
 
-元编程动态声明方法的例子：
+# TODO 送给好奇宝宝
+# 元编程动态声明方法的例子：
+
+可以看出ruby元编程极其简单.
 
 ```
 class Post
@@ -340,7 +397,9 @@ post.say_hi
 
 ```
 
-下面是一个最常见的表单:
+## form_for
+
+下面是一个最常见的Rails表单:
 
 ```
 <%= form_for @user do |f| %>
@@ -350,7 +409,7 @@ post.say_hi
 <% end %>
 ```
 
-form_for 是个方法。
+`form_for` 是个方法。
 要三个参数：
 
 ```
@@ -362,8 +421,10 @@ form_for(record, options = {}, &block)
 ```
 <%= form_for @user do |f| %>
 ```
-record:  @user,    options, 就是 {}, 所以被省略掉了。
-最后一个参数，是 block.
+
+`record`:是 `@user`,
+`options`, 就是 `{}`, 所以被省略掉了。
+最后一个参数，是 `block`.
 
 1. 为什么，第二个参数可以被省略掉？
 
@@ -393,7 +454,7 @@ block, 所以，它就是最后的参数。
 <% end %>
 ```
 
-这个f, 就是block中的参数，也可以直接把它看成叫： form object. (表单对象)
+这个`f`, 就是block中的参数，也可以直接把它看成： `form object`. (表单对象)
 
 ## 预习 rails中的简写。
 
@@ -466,13 +527,10 @@ form_for  @user,   { url: '', method: '' } do |f| ...
 end
 ```
 
-
-
-
-
 ## 那么问题来了：
 
 为什么要用rails的自定义html 标签呢？ , 例如:
+
 ```
 form_for,
 form_tag,
@@ -487,22 +545,22 @@ select_tag
 
 答： 为了更加简单
 
-比较:
+例如, 比较下面两种写法:
 
+1.form的rails写法:
 ```
 <%= form_for @post, html: { class: "edit_post", id: "edit_post_45" } do |f| %>
   <%= f.text :title, '我是标题' %>
 <% end %>
 ```
-
+2.form的HTML写法:
 ```
 <form action='/posts'  method='post' class='edit_post' id='edit_post_45' >
   <input type='text' name='post[title]' value= '我是标题' />
-  <input type='text' name='post[content]' value= '我是正文' />
 </form>
 ```
 
-看不出来.
+我们发现两者差别不大.
 
 但是, 在做 编辑某个记录的时候, 我需要:
 1. 生成一个form object
@@ -510,8 +568,10 @@ select_tag
 
 (下面就是php风格：)
 ```
-<input type='text' name='post[title]' value=<%= @post.title %> />
-<input type='text' name='post[content]' value=<%= @post.content %> />
+<form action=.. >
+  <input type='text' name='post[title]' value=<%= @post.title %> />
+  <input type='text' name='post[content]' value=<%= @post.content %> />
+</form>
 ```
 
 (下面就是ruby风格)
@@ -526,21 +586,21 @@ select_tag
 例如：某个下拉框，有100个选项. 就要搞100次循环。然后，还要判断默认值。
 那个时候，就会觉得代码特别的臃肿。
 
-TODO: 把臃肿的代码，COPY到这里。
+TODO: 把臃肿的代码，COPY到这里。或者做个截图.
 
 ## form_for 很智能的地方。
 
-过程:  rails发现了 form_for 的唯一参数: @post, 它就会开始按照"约定" 来猜测
-各种参数: form_object, method, action ...
+过程:  rails发现了 `form_for` 的唯一参数: @post, 它就会开始按照"约定" 来猜测
+各种参数: `form_object`, `method`, `action` ...
 
-所以,对于 新建:
+所以,对于 新建操作的form:
 
 ```
 <form action='/articles' method = 'post' >
 </form>
 ```
 
-对于 编辑:
+和对于 编辑操作的form:
 ```
 <form action='/articles/3/edit' method = 'post' >
   <input type='hidden' name='_method' value='put'/>
@@ -565,9 +625,12 @@ TODO: 把臃肿的代码，COPY到这里。
 
 这段代码, 来表示上面提到的两种场合(@post 是已经存在的记录,还是没有存在的记录).
 
-而且, 每一个 `<form>` 中,都有一个authentity_token. 防止注入攻击(XSS).
+### form 中的authentity_token
+
+每一个 `<form>` 中,都有一个`authentity_token`. 防止注入攻击(XSS).
 
 比如说,我在购物时,需要提交表单, 付费 . 这个表单当中,很可能就是:
+
 ```
 <form ... >
   <input name='price' value='1000'/>
@@ -583,7 +646,7 @@ TODO: 把臃肿的代码，COPY到这里。
 </form>
 ```
 
-authentity_token 是由服务器端(rails)生成的.  它针对不同的browser/session 生成不同的token .
+`authentity_token` 是由服务器端(rails)生成的.  它针对不同的browser/session 生成不同的token .
 于是我们就可以在服务器端做验证了.
 
 ```
@@ -591,8 +654,6 @@ class PostsController ...
   protec_from_forgery  # 这行代码的作用: 对每个form 做验证,看里面的token 是否跟服务器端匹配.
 end
 ```
-
-
 
 ```
 <% if @post.id.present? %>
@@ -608,14 +669,15 @@ end
     <input type='hidden' name='token' value='<%= generate_token %>' />
 ```
 
-如果使用了form tag, 就是这样:
+如果使用了form tag, 就可以自动生成 csrf token了.:
 
 ```
 <%= form_for @post do |f| %>
 ```
 
-同理: text_field,  select
+## 使用form object 生成输入项的默认值.
 
+text_field,  select
 如何保证在编辑某个属性的时候, 它能选中了某个默认值?
 ```
 <select>
@@ -625,6 +687,8 @@ end
   <option name=...> value</option>
 </select>
 ```
+
+在rails中,可以使用 `select`的辅助方法.
 
 ```
 <%= select_tag options_for_select([1,2,3], default_value ) %>
@@ -636,6 +700,7 @@ end
 1. 实现一个form
 2. form中，包含：
 
+```
 <input type='text'/>
 <input type='hidden'/>
 <textarea/>
@@ -645,6 +710,7 @@ end
 <input type='checkbox'/>
 <input type='file'/>
 <input type='password'/>
+```
 
 把上面几个学好就可以。
 

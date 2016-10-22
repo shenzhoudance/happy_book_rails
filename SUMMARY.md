@@ -27,9 +27,9 @@
   * [controller 基本功能](controller_junior.md)
   * [form 表单对象](part3_rails_premier/form_object.md)
   * [form 自定义的标签).](form_helpers.md)
-  * [Rails服务器， thin/ nginx](part3_rails_premier/rails_thin_deploy.md)
   * [布局](part3_rails_premier/layout.md)
   * [asset pipeline](part3_rails_premier/asset_pipeline.md)
+  * [Rails服务器， thin/ nginx](part3_rails_premier/rails_thin_deploy.md)
 
   8 把所有串起来.
   9 各种rails的组件.
