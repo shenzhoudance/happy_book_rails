@@ -34,12 +34,12 @@
   8 把所有串起来.
   9 各种rails的组件.
 
+  * [rails 接口](part3_rails_premier/interface_document.md)
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [调试接口的工具: POSTMan](postman.md)
-  * [rails 接口](part3_rails_premier/interface_document.md)
-  * [rails+thin 部署](part3_rails_premier/rails_thin_deploy.md)
+
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
-  * [没用了准备删掉 rails 命令行](part3_rails_premier/rails_command_line.md)
+  * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * API的查看方式
 * [Rails 常用的第三方组件](web_components/preface.md)
