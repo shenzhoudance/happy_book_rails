@@ -18,18 +18,18 @@
 
 * [Rails 入门](part3_rails_premier.md)
   * [快速入门](part3_rails_premier/rails_tutorial_from_view.md)
-  * [router 路由](part3_rails_premier/routes.md)
-  * [router 路由-特殊情况](part3_rails_premier/routes_special.md)
+  * [Router 路由](part3_rails_premier/routes.md)
+  * [Router 路由-特殊情况](part3_rails_premier/routes_special.md)
   * [View 视图](part3_rails_premier/rails_view.md)
   * [Migration 数据库迁移](migration.md)
   * [Model: CRUD ](crud.md)
   * [Model: 关联](part3_rails_premier/assocication.md)
-  * [controller 基本功能](controller_junior.md)
-  * [form 表单对象](part3_rails_premier/form_object.md)
-  * [form 自定义的标签).](form_helpers.md)
-  * [布局](part3_rails_premier/layout.md)
-  * [asset pipeline](part3_rails_premier/asset_pipeline.md)
-  * [Rails服务器， thin/ nginx](part3_rails_premier/rails_thin_deploy.md)
+  * [Controller 基本功能](controller_junior.md)
+  * [Form 表单对象](part3_rails_premier/form_object.md)
+  * [Form 自定义的标签).](form_helpers.md)
+  * [Layout 布局](part3_rails_premier/layout.md)
+  * [Asset pipeline](part3_rails_premier/asset_pipeline.md)
+  * [Server 服务器](part3_rails_premier/rails_thin_deploy.md)
 
   8 把所有串起来.
   9 各种rails的组件.
