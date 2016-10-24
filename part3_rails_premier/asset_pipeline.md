@@ -4,28 +4,39 @@
 
 一堆CSS罗列上去：
 
+```
 <link rel="stylesheet" href="./static/buttons.css">
 <link rel="stylesheet" href="./static/normalize.css">
 <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css">
 <script src="./static/javascript/jquery.min.js"></script>
 <script src="./static/javascript/jqueryui.min.js"></script>
 <script src="./static/javascript/bootstrap.min.js"></script>
+```
 
-以上，会给页面打开时，增加负担： 会多加载6个请求。
-一般的项目， 往往会用到 上百个 js.css. (例如： sina. 每次请求，至少要发出500+ 个请求，
+以上内容，会在页面打开时增加负担： 多加载N个http request( 上面是 3个css, 3个js )。
+
+一般的项目， 往往会用到 上百个 js.css.
+
+(例如： http://sina.com.cn). 每次请求，至少要发出500+ 个请求，
+
 其中 js 请求 161个， CSS 2 个（这个还可以）)
 
-在比如， 163.com  , 总共 400+ 请求， 8个 css，  121个 js 请求）
+再比如， 163.com  , 总共 400+ 请求， 8个 css，  121个 js 请求）
+
+见下面的gif:
+
+![163页面的打开过程](images/163.com-requests.gif)
 
 所以，优化HTML页面的核心：减少 http请求。
-http协议，最耗费时间的， 不是请求数据库，而是 浏览器端跟 服务器 建立连接的过程。
+
+我们的web开发中, 最耗费时间的不是请求数据库，而是 浏览器端跟 服务器 建立连接的过程。
 
 ## 传统，如何减少js/ css 的请求？
 
 多个同类型的文件，可以合并。
 
 下面两个文件，
-buttons.css:
+`buttons.css`:
 
 ```
 .green_button: {   color:  'green' }
@@ -33,7 +44,7 @@ buttons.css:
 .yellow_button: {   color:  'yellow' }
 ```
 
-normalize.css:
+`normalize.css`:
 
 ```
 p { color: black  }
@@ -59,22 +70,27 @@ javascript也是一样的。
 
 ### 对于js文件：使用 application.js
 
-全名：app/assets/javascripts/application.js
+全名：`app/assets/javascripts/application.js`
 
 原来的代码：
 
+```
 <script src="./static/javascript/jquery.min.js"></script>
 <script src="./static/javascript/jqueryui.min.js"></script>
 <script src="./static/javascript/bootstrap.min.js"></script>
+```
 
 我在rails当中，往往把所有的js文件，都放到 `app/assets/javascripts` 目录下。
 
-然后：
+然后, 在对应的erb页面中：
+```
 <%= javascript_include_tag 'jquery.min.js' %>
 <%= javascript_include_tag 'jqueryui.min.js' %>
 <%= javascript_include_tag 'bootstrap.min.js' %>
+```
 
-在Rails 3.0以后， 我们就把上面的代码，统一写到 `app/assets/javascripts/application.js` 中：
+在Rails 3.0以后， Rails提供了新的功能: `assets pipeline`, 我们就把上面的代码，统一写到
+`app/assets/javascripts/application.js` 中：
 
 ```
 
@@ -85,9 +101,9 @@ javascript也是一样的。
 
 注意： `//= require <文件名>`这个格式是固定的。 多个空格都不行！
 
-然后，在 布局文件中， 引用它：
+然后，在布局文件`app/views/layouts/application.html.erb`中， 引用它：
 
-   app/views/layouts/application.html.erb
+
 
 ```
 
@@ -100,12 +116,17 @@ javascript也是一样的。
 
 ```
 
+上面代码,在 "开发模式"下,就可以正确显示出我们引用的javascript
+
 ### 对于 css 的合并
+
 把
 
+```
 <link rel="stylesheet" href="./static/buttons.css">
 <link rel="stylesheet" href="./static/normalize.css">
 <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css">
+```
 
 中的 css文件，保存到 `app/assets/stylesheets`目录下。
 
@@ -123,12 +144,10 @@ javascript也是一样的。
 
 注意： 上面的 `*= require 文件名`的格式是固定的。多个空格都不行。
 
-然后，在 布局文件中， 引用它：
+然后，在 布局文件 `app/views/layouts/application.html.erb`中， 引用它：
 
-   app/views/layouts/application.html.erb
 
 ```
-
 <html>
 <head>
   <%= stylesheet_link_tag 'application' %> </head>
@@ -137,59 +156,27 @@ javascript也是一样的。
 
 ```
 
-## 如何压缩他们？需要一个命令
+## 如何压缩css/js ？需要一个命令
 
+
+```
 $ bundle exec rake assets:precompile RAILS_ENV=production
+```
 
 - `rake assets:precompile`: 压缩所有的css, js, 以及为图片增加后缀。(方便服务器缓存)
 - `RAILS_ENV=production`: 指定你的环境
 
-运行后，等。 会根据你的CSS/JS文件的数量， 时间上有所不同。
+这个命令还会耗时大约几分钟。 根据你的CSS/JS文件的数量， 时间上有所不同。
 
-压缩完之后，就会发现， public/assets 目录下，多出来两个文件，形如：
+压缩完之后，就会发现， `public/assets` 目录下，多出来两个文件，形如：
 
+```
 application-308d70d0bd03d91770479da196ec0827.css
-
-
-## rake assets:precompile 需要在什么时候运行？
-
-1. 不需要每次部署都运行。
-2. 只在 production 环境下，才需要运行。
-3. 只在修改了css/js文件后，才需要运行。
-
-
-=================================
-## 下面是老内容。几个注意事项。
-
-## 1. 如果新增 js 文件？
-
-application.js
-
-```
-//= require jquery
-//= require jquery_ujs
-//= require jquery.ui.all
-//= require jquery-ui
+application-308d70d0bd03d91770479da196ec0827.js
 ```
 
-把你要增加的js文件，放到这里就可以了。
-
-## 2. 尽量不要在 layout 文件中， 使用 针对某个model的条件判断。
-一个例外：  <%= if current_user ... %>
-
-## 3. 不要把js 文件单独写出来。
-
-## 4. jquery.min  与 前面的 jquery.js 是重复的。
-jquery.js :  1.11.1    2014年
-jquery.min.js:   1.3    2009年
-
-很可能会出问题的。
-
-## js 太分散了。
-
-
-rake assets:precompile
-
+这两个文件, 就是把所有的js, css压缩到一起的文件了. 以后, 我们每次打开WEB页面时, 只发起这
+两个请求就够了
 
 开发模式下，我们的页面加载，需要很多个 js， css 文件：
 ```
@@ -198,52 +185,28 @@ rake assets:precompile
 <link href="/assets/jquery.ui.core.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/jquery.ui.theme.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/jquery.ui.accordion.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.menu.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.autocomplete.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.button.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.datepicker.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.resizable.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.dialog.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.progressbar.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.selectable.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.slider.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.spinner.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.tabs.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.tooltip.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.base.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/jquery.ui.all.css?body=1" media="all" rel="stylesheet" />
 <link href="/assets/select2.min.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/select2-bootstrap.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/validate.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/application.css?body=1" media="all" rel="stylesheet" />
-<link href="/assets/lrtk.css?body=1" media="all" rel="stylesheet" />
-  <script src="/assets/jquery.js?body=1"></script>
+...
+<script src="/assets/jquery.js?body=1"></script>
 <script src="/assets/jquery_ujs.js?body=1"></script>
 <script src="/assets/jquery.ui.core.js?body=1"></script>
 <script src="/assets/jquery.ui.widget.js?body=1"></script>
 <script src="/assets/jquery.ui.accordion.js?body=1"></script>
 <script src="/assets/jquery.ui.position.js?body=1"></script>
 <script src="/assets/jquery.ui.menu.js?body=1"></script>
-<script src="/assets/jquery.ui.autocomplete.js?body=1"></script>
-<script src="/assets/jquery.ui.button.js?body=1"></script>
-<script src="/assets/jquery.ui.datepicker.js?body=1"></script>
-<script src="/assets/jquery.ui.mouse.js?body=1"></script>
-<script src="/assets/jquery.ui.draggable.js?body=1"></script>
-<script src="/assets/jquery.ui.resizable.js?body=1"></script>
-<script src="/assets/jquery.ui.dialog.js?body=1"></script>
-<script src="/assets/jquery.ui.droppable.js?body=1"></script>
-<script src="/assets/jquery.ui.effect.js?body=1"></script>
-<script src="/assets/jquery.ui.effect-blind.js?body=1"></script>
 ```
 
 在生产模式下，
 
 ```
-  <link href="/assets/application-ee1cf5e49ea54cc7b4cf3bef3be67d0c.css" media="all" rel="stylesheet" />
-  <script src="/assets/application-d45534ab0cd8c659530e2bebd7e60fbe.js"></script>
+<link href="/assets/application-ee1cf5e49ea54cc7b4cf3bef3be67d0c.css" media="all" rel="stylesheet" />
+<script src="/assets/application-d45534ab0cd8c659530e2bebd7e60fbe.js"></script>
 ```
 
-优势：  增加任意的js， css，都不会影响到发送的request 的次数。
 
+## rake assets:precompile 需要在什么时候运行？
 
-2015年前的新浪： 打开一次页面，需要 150多个请求（70多个css， 50个js）
+1. 不需要每次部署都运行。
+2. 只在 production 环境下，才需要运行。
+3. 只在修改了css/js文件后，才需要运行。
+
