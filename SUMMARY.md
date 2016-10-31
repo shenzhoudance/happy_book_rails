@@ -38,6 +38,8 @@
   * [接口入门](part3_rails_premier/rails_interface.md)
   * [调试接口的工具: POSTMan](postman.md)
 
+  * [各种回调（钩子)方法](hooks.md)
+
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
