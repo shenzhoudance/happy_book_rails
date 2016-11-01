@@ -96,7 +96,7 @@ rails的特性的炫耀, 上来就给出一堆花里胡哨的概念和技巧, �
 rails中的各种form_for, form_tag, form_helpers的.  所以,这里我们要向大家展开一扇新的大门.
 学会了form object, 那么 java 世界的第一个框架 struts 就基本学到手了.
 
-然后是 form helpers. 它是把 <input>, <select> 等表单标签使用rails的形式来表示的组件. 这里的
+然后是 form helpers. 它是把 `<input>, <select>` 等表单标签使用rails的形式来表示的组件. 这里的
 前提知识是 html form 标签. 知道了这个, 就知道如何使用了.
 
 最后,就是如何在controller中读取request中传递过来的参数(往往是 form object的形式).
