@@ -9,6 +9,7 @@
   * [前端GUI的使用方式](database_gui.md)
 
 * Ruby入门
+  * [学习过程](part3_rails_premier/ruby_steps.md)
   * [Ruby 语法入门](part3_rails_premier/ruby_premier.md)
   * [Ruby 进阶](part3_rails_premier/ruby_jin_jie.md)
   * [Ruby 进阶 ](part3_rails_premier/ruby_advanced.md)
@@ -17,6 +18,7 @@
   * [发起请求的原理](network_basic.md)
 
 * [Rails 入门](part3_rails_premier.md)
+  * [学习过程](part3_rails_premier/rails_steps.md)
   * [快速入门](part3_rails_premier/rails_tutorial_from_view.md)
   * [Router 路由](part3_rails_premier/routes.md)
   * [Router 路由-特殊情况](part3_rails_premier/routes_special.md)
