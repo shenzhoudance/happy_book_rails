@@ -2,6 +2,12 @@
 
 思维原创!  出来创业之后,招不到 rails的成手, 只好自己培养. 于是慢慢的便形成了教材!
 
+直接在 gitbook 上阅读: https://sg552.gitbooks.io/happy_book_rails/content/
+
+或者来这里阅读:  http://web.siwei.tech/
+
+有任何问题欢迎联系我:  shensiwei@sina.com
+
 ## 先说查看方法
 
 1. 安装 npm
