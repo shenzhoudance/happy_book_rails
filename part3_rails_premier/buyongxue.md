@@ -217,3 +217,8 @@ routes.rb中，只应该出现： resources, root 两种路由。
 
 这个技术，是为了让客户端减少对服务器端的请求。 但是效果不理想，很容易引起js的错误。
 那么我们在需要的场合，直接使用更加纯粹的one-page-app. ( vuejs, react, angular,  ... )
+
+Remove the gem 'turbolinks' line from your Gemfile.
+Remove the //= require turbolinks from your app/assets/javascripts/application.js .
+Remove the two "data-turbolinks-track" => true hash key/value pairs from your app/views/layouts/application.html.erb .
+
