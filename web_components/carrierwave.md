@@ -3,6 +3,14 @@
 文件上传可以说处处都有，我们在论坛中上传附件，在注册一个新用户时上传头像，
 编辑一个文章时要上传图片等等。
 
+使用的基本的文件上传，就可以达到我们想要的目的。
+但是，基本的文件上传，有一定的弊端：
+
+1. 要把所有的上传文件的 文件名， 服务器上的路径， 要记录下来。
+2. 如果客户端上传的文件过大， 我们要可以缩放。
+3. 要不要把文件名处理一下？（去掉汉字？去掉空格？用随机字符串命名？）
+
+为了很方便的解决上面的需求， 我们就使用现成的轮子。  carrierwave
 CarrierWave(https://github.com/carrierwaveuploader/carrierwave)
 用来把客户端上传的图片保存到服务器本地。它支持包括Rails, Sinatra 在内的多种框架。
 
@@ -27,13 +35,13 @@ class AvatarUploader < Logo::Uploader::Base
 end
 ````
 
-同时, 务必记得 为对应的model 增加 列:  Avatar
+同时, 务必记得 为对应的model 增加 列:  logo
 
 ```ruby
 # -*- encoding : utf-8 -*-
-class AddSnapshotToMarketModules < ActiveRecord::Migration
+class AddLogoToMarketModules < ActiveRecord::Migration
   def change
-    add_column :market_modules, :avatar, :string, default: '', comment: '保存截图路径'
+    add_column :market_modules, :logo, :string, default: '', comment: '保存截图路径'
   end
 end
 ```
@@ -41,7 +49,7 @@ end
 in your model:
 
 ```ruby
-class Item < ActiveRecord::Base
+class MarketModule < ActiveRecord::Base
   mount_uploader :logo, LogoUploader
 end
 ```
@@ -55,11 +63,12 @@ in your view:
 in controller :
 
 ```ruby
+your_model = MarketModule.first
 # do nothing....
-item.create(params[:item])
+your_model.create(params[:item])
 # or
-item.logo = params[:file]
-item.save
+your_model.logo = params[:file]
+your_model.save
 ```
 
 # 对于 rails4, 只需要把 avatar 这个属性加入到 参数白名单列表中:
