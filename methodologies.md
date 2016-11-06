@@ -480,3 +480,21 @@ Errno::ECONNREFUSED (Connection refused - connect(2) for nil port 80):
 3. 三角干吗的，正方形干吗的，没有规范。
 
 一定要流程图的话， 也使用UML的活动图。 http://www.ibm.com/developerworks/cn/rational/tip-drawuml/figure1.gif
+
+# 如何自学
+
+## 1. 英语不能差。 英语对于程序员，就好比鼻子对于大厨。
+
+与国外大牛交流， 要用英文。
+看国外官方文档， 都是英文（就连vuejs，作者是中国人， 官方文档都是英文. ruby 日本人写的，官方文档还是英文）
+看stackoverflow, 全都是英文。 （stackoverflow 如果是 95分， 国内iteye, infoq 70分， csdn 30 分,给高了。）
+
+## 2. 提高搜索，解决问题的能力。
+
+遇到一个新技术，要有敏锐的嗅觉，知道：这个新技术的
+1.官方网站在哪里。
+2.源代码地址在哪里。
+3.再看这个新技术是否有前景。（一般搜索 “技术A怎么样？", 用英文，在google上搜，就会出来特别有价值的内容)
+4.如果有价值学习，那么就来到官网，看tutorial。guide.
+5.随着学习的深入，不断的问其他人，不断的参与新项目，要与人交流，所以ruby论坛，线上的要参加，线下的也要参加。
+6.多关注一些github。
