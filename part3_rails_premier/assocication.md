@@ -62,12 +62,20 @@ id   |  name |  mother_id
 
 ### 用SQL来表示。
 
+如果我们要找出 孩子的名字是“小王”的 妈妈。
+
 ```
    select * from mothers
         join sons
         on sons.mother_id = mothers.id
-        where sons.id = 1
+        where sons.name = '小王'
 ```
+
+(复习一下SQL的知识，上面的SQL语句，会给到我们一个大表）
+
+mothers.id | mothers.name | sons.id   |  sons.name |  sons.mother_id
+-- | -- | --  |   --  |  --
+1  | 王妈妈 | 100  |  小王 |  1
 
 ### 用持久层(ruby代码)来表示
 
