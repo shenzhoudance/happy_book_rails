@@ -54,13 +54,25 @@ Migration在Rails中是非常简单的. 它就是Rails的一部分.
 1.使用 config/database.yml 来连接mysql:
 
 ```
+# 表示，这是开发模式下的数据库配置 , 可用的是： development, test, production
 development:
+
+  # 表示 数据库的驱动, 例如：mysql2, sqlite, oracle, postgres...
   adapter: mysql2
+
+  # 数据库的名字。
   database: db_name_dev
+
+  # 连接数据库的用户名
   username: koploper
+
+  # 表示密码
   password:
+
+  # 数据库的ip地址。 如果是本机数据库，就是 localhost, 或者 127.0.0.1
   host: localhost
 ```
+
 
 2.修改 Gemfile, 增加：
 
@@ -87,10 +99,11 @@ gem 'mysql2', '0.3.17' （如果你的Rails也是 4.2.x 的话）
 默认Rails 就带了. 略.
 
 ### 开始Migration
+
 下面是一个最简单的migration 的例子:
 
 ```
-# db/migration/20161021103259_create_books.rb
+# db/migrate/20161021103259_create_books.rb
 class CreateBooks < ActiveRecord::Migration
   def up
     create_table :books do |t|
@@ -231,6 +244,9 @@ schema_migrations  users
 
 ## 回滚
 
+回滚，就是通过一条命令，`rake db:rollback` 来执行对应的migration中的`down`方法。
+
+
 ```
 $ bundle exec rake db:rollback
 == 20160308125025 CreateUsers: reverting ======================================
@@ -246,8 +262,23 @@ sqlite> .tables
 schema_migrations
 ```
 
+下面，是另一个完整的例子，可以看到 down 中的方法，与 up 是相反的：
 
-## schema_migrations
+```
+
+class RenameAgeToNianLingFromUsers < ActiveRecord::Migration
+
+  def up
+    rename_column :users, :age , :nian_ling
+  end
+
+  def down
+    rename_column :users, :nian_ling, :age
+  end
+end
+```
+
+## schema_migrations: 记录迁移过程的表
 
 可能有的同学会比较奇怪： `schema_migrations`, 这个是干嘛的呢？
 
@@ -272,6 +303,8 @@ sqlite> select * from schema_migrations;
 多出来的一行：  `20160308125025` , 刚好就是我们新建的migration :
 `20160308125025_create_users`名字的一部分。
 
+(一旦某个rails的正式项目，开始之后，这个表的内容会很多)
+
 
 ## 如何修改一个列？
 
@@ -281,11 +314,13 @@ sqlite> select * from schema_migrations;
 2. 修改migration文件的内容。 在其中增加 `change_column`方法. (具体代码略)
 3. `$ rake db:migrate`
 
-绝对错误！因为，记住： 一旦创建好migration文件（特别是已经提交到了远程的话），就绝对不要去修改它！
+绝对错误！记住： 一旦创建好migration文件（特别是已经提交到了远程的话），就绝对不要去修改它！
+
+因为一rollback的话，迁移的时间线就立马乱了。
 
 正确的做法是：
 
-1. 新建个migration.
+1. 新建个migration. (在这个migration中，使用 change_column 方法，来修改）
 2. 运行它
 
 ### 例子
@@ -295,7 +330,7 @@ sqlite> select * from schema_migrations;
 
 `$ bundle exec rails g migration rename_age_to_nian_ling_from_users_table`
 
-这里的migration的命名，不是特别严格的。不会引起错误。但是原则上，migration 要看到名字，
+这里的migration的命名(在上面，就是 `rename_age_to_nian_ling_from_users_table` )，不是特别严格的。不会引起错误。但是原则上，migration 要看到名字，
 就能知道它是做什么的。 例如：
 
 - create_users: 创建users 表
@@ -372,6 +407,20 @@ create_table :students do |t|
 end
 
 ```
+
+上面的 `t.timestamps`, 会创建两个列： `created_at`, `updated_at`.
+
+  - created_at:  表示 该条记录，在什么时间被创建的。
+  - updated_at:  表示 该条记录，在什么时间被修改的。
+
+
+等同于：
+```
+  t.datetime :created_at
+  t.datetime :updated_at
+```
+
+rails中几乎每个表，都默认有这两个列。
 
 - drop_table
 
