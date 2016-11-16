@@ -137,6 +137,31 @@ puts "a is: #{a}"
 # => a is: 1
 ```
 
+## 任何语言都通用的 数据类型.
+
+1. String 字符串 "abc"
+2. Number (包括了: 整数,小数,long double ...) 数字,  123342342342343.3141234
+3. Array.  数组   [1,2,3]
+4. Hash   hash.  (dictionary)
+
+```
+{
+   "name": "dashi",
+   "birth": "1982-9-16"
+}
+```
+## 对象和实例 .
+
+对象:  class, object   抽象概念,  例如:   human
+
+实例:  instance.    具体概念.  小王.
+
+小王 是 Human 的一个 instance.
+
+小王有个属性,叫做: "名字",  那么,小王的名字,就可以认为,是 instance varaible.
+(实例变量, 只跟实例有关)
+
+
 ## 双引号与单引号
 
 ## class
@@ -335,6 +360,10 @@ puts "hihihi"   # 等同于   puts("hihihi")
 
 ### hash最外面的{} 在大多数情况下可以省略，例如：
 
+具体的省略:
+
+如果这个 hash, 是某方法的最后一个参数(不考虑block的话),那么最外层{} 可以省略
+
 ```ruby
 Apple.create :name => 'apple', :color => 'red'
 
@@ -507,6 +536,17 @@ class Interface::ApplesController < ApplicationController::Base
   ## 其他代码
 end
 ```
+
+我们在实战中,会有这样的模式:
+
+当访问某个页面的时候,
+
+普通人:  /pages
+管理员:  /admin/pages
+
+在上面的例子中, '/admin' 就是一个非常典型的 "命名空间".  我们也可以叫它: url前缀.
+
+它没有任何意义, 存在的目的,就是为了区别 管理员与普通用户的URL (方便权限的管理)
 
 ## block, proc, lambda
 
