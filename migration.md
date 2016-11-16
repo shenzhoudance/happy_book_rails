@@ -492,3 +492,16 @@ remove_index :students, :name
 ```
 
 
+## 作业
+
+1. 在本地安装好 mysql 服务器端, mysql客户端(gui)
+2. 创建rails项目.
+3. 在rails项目中, 配置好于mysql的连接. 数据库的名字为: demo
+4. 使用 rake db:create 命令来创建数据库.
+5. 建立一个migration, 新建一个表: books, 有两个列: author(string), title(string)
+另外, 有时间戳列(created_at, updated_at)(提示:使用 t.timestamps 来创建)
+6. 建立migration, 修改这个表的列, 把author 的名字,改成 zuo_zhe .
+7. 建立migration, 删掉这个表的列:title,  再新建一个列: name.(string)
+8. 建立migration, 删掉这个books 表.
+9. rollback 两步.
+10. 再 rake db:migrate 回来.
