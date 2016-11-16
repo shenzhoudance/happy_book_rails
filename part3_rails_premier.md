@@ -58,12 +58,15 @@ PHP之所以在国内流行，还是因为国人英语差了些。 外面教的�
 
 传统操作数据库的方式：
 
-Select * from apples where name like '%红%';
+```
+select * from apples where name like '%红%';
+```
 
 很容易就编程复杂的 SQL：
 
 十年以前，我们经常会看到这样的SQL代码：
 
+```
 SELECT a.name, a.color, a.weight, a.height...
    ..................
    .............
@@ -78,25 +81,30 @@ SELECT a.name, a.color, a.weight, a.height...
 
    ON a.fruit_id = f.id
    ORDER BY 'a.created_at, a.update_at'
-
+```
 
 更多例子： 见： https://www.google.co.kr/search?q=complex+sql&espv=2&biw=1920&bih=987&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjL0dSc6ojPAhURtJQKHfwkAwIQ_AUIBigB#imgrc=r06AHuSVg2BJpM%3A
 
 所以，是个项目， 就好多这样的SQL。 几乎处于无法维护的状态。
-（所以，当年才会有DBA 这样的现在看起来比较奇怪的职位。十年以前 , Oracle DBA, 月薪1万多。现在。。。。）
+（所以，当年才会有DBA 这样的现在看起来比较奇怪的职位。十年以前 , Oracle DBA, 月薪1万多）
 
-所以，对应的框架，就应运而生。 大家就想，如果数据库，能够以面向对象的形式来考虑，会不会好很多？
+大家就想，如果数据库，能够以面向对象的形式来考虑，会不会好很多？
 
 apples 表：
 
-  列名  |  属性
-----------------
-  name  |  String
-  color |  String
+列名  |  属性
+-- | --
+name  |  String
+color |  String
 
-这就是一个 model:
+这就是一个 model: 有两个属性： name, color.
 
-def Apple
+如果用ruby语言来表示的话：
+
+```
+class Apple
+
+  # 显式定义了两个 属性(在ruby中，属性就是实例变量）
   @name
   @color
 
@@ -117,44 +125,63 @@ def Apple
   end
 end
 
+```
 
 所以，大家就考虑，我对数据库的 操作：
 
-insert into apples ('红苹果', '红色');
+```
+insert into apples(name, color) values ('红苹果', '红色');
+```
 
 可以直接使用面向对象的观点来操作：
 
+```
 apple = Apple.new
 apple.name = '红苹果'
 apple.color = '红色'
 apple.save
+```
 
-同理， 删除：
+## 同理， 删除：
 
 SQL;
+```
 delete from apples where id = 1;
+```
 
 面向对象的思想：
 
-apple = Apple.find(1)
+```
+apple = Apple.where('id = 1');
 apple.delete()
+```
 
-update 也是一样。
+## update 也是一样。
 
-搜索：
+## 搜索：
 
+sql:
+```
 select * from apples;
+```
 
 面向对象：
 
+```
 Apple.all
+```
 
+复杂一些的搜索， SQL：
+
+```
 select * from apples where name like '%苹果%' order by name desc;
+```
 
 面向对象：
 
+```
 Apple.where("name like '%苹果%'").order('name desc')
-
+```
 
 所以，上面的复杂SQL：
 
@@ -179,10 +206,13 @@ SELECT a.name, a.color, a.weight, a.height...
 
 就可以写成：
 
+```
 Apple.join('fruits').order('apple.created_at')...
+```
 
 只不过，需要在apple.rb, fruit.rb对应的class中，进行配置：
 
+```
 class Apple
   belongs_to('fruit')
 end
@@ -190,6 +220,7 @@ end
 class Fruit
   has_many('apples')
 end
+```
 
 总之，目的：
 
@@ -203,7 +234,9 @@ end
 1. 掌握SQL的基础知识 (insert, delete, select. .. )
 2. 然后才能使用 ORM （Object relation mapping)
 
-用了一个之后， 你看所有语言的ORM框架都是几乎一样的。
+学会了一个之后， 你看所有语言的ORM框架都是几乎一样的。
+
+Rails中的 ORM 是最最简单的。
 
 
 ### 结语：
@@ -212,8 +245,6 @@ end
 
 java: Hibernate  ( 一本砖头厚的书 300页，起。）
 Rails: ActiveRecord ( 20页）
-
-
 
 
 ## 处理路由

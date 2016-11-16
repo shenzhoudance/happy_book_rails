@@ -210,3 +210,34 @@ application-308d70d0bd03d91770479da196ec0827.js
 2. 只在 production 环境下，才需要运行。
 3. 只在修改了css/js文件后，才需要运行。
 
+
+## asset_path 与 public 目录
+
+Rails 2.x的时代， 在 asset pipeline的概念出来之前，所有的图片，js，css 都
+放到public 目录下。
+
+Rails 3.1 以后（2011年），出现了 asset_pipeline , 那么所有的需要进行 js，css压缩
+的内容， 都要放到app/asset
+
+所有的 app/assets 目录下的东西，都可以被编译。（ 32.jpg -> 32_a1b2c3d4...z100.jpg)
+
+<%= asset_path '2.png' %>
+
+所有的 public 目录下的东西，都可以在开发模式下，被rails服务器所访问。
+例如：
+
+public/images/1.jpg
+
+index.html.erb:
+
+<img src='images/1.jpg'/>
+
+## 为什么不鼓励，把erb中使用的图片，放到public 目录下？
+部署时，几乎所有的 /images,  /assets, 都会被nginx做解析。
+nginx中的解析，会跟rails中直接引用 images/1.jpg 有一些冲突。
+
+所以，在目前看来， asset pipeline 极度流行， 那么大家不要把erb（css）中
+用到的图片，放到 public 目录下。
+
+但是： 上传图片，都保存到 public 目录。
+

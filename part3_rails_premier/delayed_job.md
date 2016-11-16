@@ -1,6 +1,21 @@
 #[delayed_job](https://github.com/collectiveidea/delayed_job)
 delayed_job用来处理rails中的异步延时任务,支持发送大量实时通讯、改变图片尺寸、http下载等等。
 
+例如， 我要在controller中，发送10万封邮件。 这个操作要耗时3个小时。我们不能这样写：
+
+```
+def send_emails
+  (1..1000000).each do |n|
+    ## 开始处理发送邮件。
+  end
+  redirect_to ...
+end
+```
+
+这样写的话，是不行的。 每次这个action都会timeout。
+
+对于这个情况，我们就要让程序在后台运行。
+
 ##安装
 在Active Record中使用，直接在`Gemfile`中加入
 ```bash
@@ -12,6 +27,35 @@ Active Record后端需要一个任务表，创建命令：
 $ rails generate delayed_job:active_record
 $ rake db:migrate
 ```
+就会生成一个migration:
+
+```
+
+class CreateDelayedJobs < ActiveRecord::Migration
+  def self.up
+    create_table :delayed_jobs, force: true do |table|
+      table.integer :priority, default: 0, null: false # Allows some jobs to jump to the front of the queue
+      table.integer :attempts, default: 0, null: false # Provides for retries, but still fail eventually.
+      table.text :handler,                 null: false # YAML-encoded string of the object that will do work
+      table.text :last_error                           # reason for last failure (See Note below)
+      table.datetime :run_at                           # When to run. Could be Time.zone.now for immediately, or sometime in the future.
+      table.datetime :locked_at                        # Set when a client is working on this object
+      table.datetime :failed_at                        # Set when all retries have failed (actually, by default, the record is deleted instead)
+      table.string :locked_by                          # Who is working on this object (if locked)
+      table.string :queue                              # The name of the queue this job is in
+      table.timestamps null: true
+    end
+
+    add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
+  end
+
+  def self.down
+    drop_table :delayed_jobs
+  end
+end
+
+```
+
 如果是`rails 4.2`，则需要在`config/application.rb`中配置`queue_adapter`
 ```ruby
 # config/application.rb
@@ -41,6 +85,59 @@ end
 #使用延时任务
 @user.delay.activate!(@device)
 ```
+
+使用了 `delay`之后， 所有的任务，都要：
+
+1. 写入到特定的“任务表”中。
+2. 我们要运行一些“工人（worker）“， 来执行这些任务。
+
+```
+class User < ActiveRecord::Base
+  def eat
+    Rails.logger.info "== begin eating ..."
+    sleep 2
+    Rails.logger.info "== finished ..."
+  end
+end
+```
+
+```
+rails console:
+> User.first.delay.eat
+```
+
+```
+$ bundle exec script/delayed_job -n 2 start
+```
+ 表示，同时有两个worker 在干活儿。这两个worker, 会紧盯着“任务表”， 一有任务，马上开始执行。
+
+```
+kaikai:graduate$ bundle exec ruby bin/delayed_job -n 2 start
+delayed_job.0: process with pid 31047 started.
+delayed_job.1: process with pid 31053 started.
+```
+
+3. 看日志。就会发现， 这些worker 在不间断的工作。
+
+```
+# 表示 worker 开始认领了这个任务，开始执行了。
+# 第一步。 认领该任务。并且，把该任务的状态，变成: locked.
+17:44:52 DEBUG:   Delayed::Backend::ActiveRecord::Job Load (0.5ms)  SELECT  `delayed_jobs`.* FROM `delayed_jobs` WHERE `delayed_jobs`.`locked_by` = 'delayed_job.1 host:kaikai pid:31053' AND `delayed_jobs`.`locked_at` = '2016-11-03 09:44:52' AND `delayed_jobs`.`failed_at` IS NULL  ORDER BY `delayed_jobs`.`id` ASC LIMIT 1
+# 第二步。 开始执行了。
+17:44:52 INFO: == begin eating ...
+17:44:52 DEBUG:   User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1
+# 这个是delayed job的日志
+17:44:52 INFO: 2016-11-03T17:44:52+0800: [Worker(delayed_job.1 host:kaikai pid:31053)] Job User#eat (id=2) RUNNING
+17:44:54 INFO: == finished ...
+# 第三步。 执行完毕，从delay_jobs （任务表）中，删掉干才干完的任务。
+17:44:54 INFO: 2016-11-03T17:44:54+0800: [Worker(delayed_job.0 host:kaikai pid:31047)] Job User#eat (id=1) COMPLETED after 2.2580
+# 因为它干完一个任务就删掉一个， 所以，当delay_jobs 表中，没有任何记录的时候，就是活儿干完
+的时候。
+```
+
+
+
+
 如果一个方法需要一直在后台运行，可以在方法声明之后，调用`handle_asynchronously`
 ```ruby
 class Device

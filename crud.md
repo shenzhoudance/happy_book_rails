@@ -40,8 +40,8 @@ Model是 MVC中的M, 作用是操作数据库。
 
 例如： 希望读取所有的book记录。
 
-1. 浏览器发起一个请求给Rails. 例如`http://localhost:3000/books`
-2. Rails调起持久层。 在 `books_controller#index_action` 中处理这个 `/books`请求。
+1.浏览器发起一个请求给Rails. 例如`http://localhost:3000/books`
+2.Rails调起持久层。 在 `books_controller#index_action` 中处理这个 `/books`请求。
 
 ```
 class BooksController < ApplicationController
@@ -51,7 +51,7 @@ class BooksController < ApplicationController
 end
 ```
 
-3. 持久层查询数据库。并且把数据加载过来。
+3.持久层查询数据库。并且把数据加载过来。
 
 ```
 Book.all
@@ -106,9 +106,14 @@ while (result.next()) {
 ## 数据库与持久层
 
 数据库：
+
 - sqlite:  是一个 .sqlite3 文件（例如 Rails中，默认就会创建：db/development.sqlite3)
+
 - mysql:  也是一个文件。 对于ubuntu, 默认放在： /var/lib/mysql/数据库名下面，例如：
+
+```
 /var/lib/mysql/me/students.frm,  .ibd
+```
 
 文件放在硬盘上。
 
@@ -152,9 +157,10 @@ SQL语句的形式： 特别原始。 不好操作。不好维护。特别容易
 
 例如:
 
-## 分页。
+## 不同数据库对于分页的操作。
 
 如果用MYSQL：
+
 ```
 select ... from ... order by id limit(100) offset(2000)
 ```
@@ -186,6 +192,7 @@ select ... from ... order by id between 2000 and 2100
 学好一个持久层， 可以操作所有数据库。
 
 例如： 学好hibernate/Rails ActiveRecord, 可以在所有数据库上操作。
+
 而且持久层生成的代码，就是专家级别的。(持久层在生成代码时会自动作优化。)
 
 下面是持久层把 代码 转换成SQL语句的例子:
@@ -211,9 +218,14 @@ SELECT  `cities`.* FROM `cities`   ORDER BY `cities`.`id` ASC LIMIT 1
 SELECT COUNT(*) FROM `airport_managers`  WHERE `airport_managers`.`city_id` = 1
 ```
 
-4. Rails的XX机制，让页面显示了持久层的数据。
+可以看出， 生成的SQL，格式及其严谨，该有的 \` 都有。而且， 该大写的都大写。
+
+4.Rails 让页面显示了持久层的数据。
+
+下面是个例子:
 
 CRUD:
+
 先创建一个表：  `books`
 
 
@@ -224,7 +236,7 @@ $ bundle exec rails g migration create_books
       create    db/migrate/20160926041205_create_books.rb
 ```
 
-4.2 为它增加内容:
+4.2 为这个migration增加内容:
 
 ```
 def change
@@ -256,7 +268,9 @@ end
 
 4.5 进入到控制台
 
-(说明: 所有 `irb>` 开头的代码,都表示本行从 rails console中敲入 )
+说明:
+- 所有 `irb>` 开头的代码,都表示本行从 rails console中敲入 , 例如： `irb(main):001:0>`
+- 所有 `=>` 表示运行结果。
 
 ```
 $ bundle exec rails console
@@ -432,6 +446,11 @@ class Employee < ActiveRecord::Base
 end
 ```
 
+ActiveRecord 就是 rails的 持久层框架. 任何class， 只要继承 `ActiveRecord::Base`,
+那么，就可以实现对数据库的 ORM。
+
+可以认为，`create`， `save`， `update`， `delete`, `find`, `where`这些方法，都是通过继承 `ActiveRecord::Base`来实现的
+
 ## 总结: 如何在Rails中实现 数据库的映射呢？
 
 Rails中声明持久层极其简单:
@@ -449,5 +468,15 @@ end
 
 # 作业：
 
+创建一个rails项目, 连接到本地的mysql， 本地mysql有个表：book， 有两个列： title, author:
+
 1. 在console下面， 实现book表的增删改查。
-2. 在action里面， 实现 book表的增删改查。
+
+2. 在Rails的action里面， 实现 book表的增删改查。
+
+例如：
+
+2.1 用户访问 /books/create_a_book， 数据库 books表中就会出现一条记录（title: "三体", author: "大刘"），页面显示结果： “操作成功”
+2.2 用户访问 /books/update_the_book, 数据库的 books表的第一条记录，的title，就会变成： “十万个为什么”.  页面显示结果： “操作成功"
+2.3 用户访问 /books/search_the_book, 数据库的books表，会查询：  author=大刘 的记录。页面显示结果：   找到1/0个结果。
+2.4 用户访问 /books/delete_the_book, 会删除数据库books表中的第一条记录。 页面显示结果： “操作成功”
