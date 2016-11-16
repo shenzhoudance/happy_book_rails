@@ -124,3 +124,22 @@ render 'filename'
 render xxx,  :collection ...
 render xxx,  :as ...
 render xxx,  :object ...
+
+
+# 作业
+
+1. 创建一个rails项目. 例如:  market
+
+2. 这个项目中, 大家可以访问  /fruits/list
+
+打开后, 页面应该显示下面三行内容:
+
+```
+香蕉
+苹果
+橘子
+```
+
+(提示: 在view中定义一个数组, 然后循环显示.)
+
+3. 上传到 github上.
