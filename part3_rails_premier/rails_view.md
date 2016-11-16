@@ -190,7 +190,7 @@ end
 
 ## 不要过多的使用helper ,
 
-因为我们调用helper的时候,不会显示的写出caller. 例如:
+因为我们调用helper的时候,不会显式的写出caller. 例如:
 
 ```
 # my_module 就是 say_hi 的caller
@@ -200,6 +200,16 @@ my_module.say_hi
 find_me
 ```
 
+另外, ruby本身就是动态语言.(它的很多方法,都不知道声明在哪里)
+
+
+```
+<%= show_header %>
+
+<%= book.show_header %>
+```
+可以看出,下面的 book 是一个非常明显的caller. 我们在实战中,最好把方法,都定义在 model, controller中.
+(model中的方法定义,更多一些)
 
 
 # 不用学的
@@ -213,7 +223,26 @@ render xxx,  :object ...
 ```
 
 # 课程的作业
-在一个视图中:
+1. 创建一个rails应用.
+2. 创建一个controller:  my_views_controller
+3. 创建action: simplest_view, 访问后, 可以显示当前时间.
+"当前时间是:  2016 Nov 16 .... " (提示: 使用Time.now方法即可)
+4. 创建action: hello_from_action. 在该action中定义一个变量 @name,
+然后,访问页面时, 可以显示 "xx, 你好!"
+5. 创建action: show_footer. 在对应的视图中,调用一个名为 "_footer.html.erb"的partial.
+该partial中的内容如:  "copyright@2016, by <你的名字>"  . "你的名字"是通过变量
+传入到这个partial中的.
+6. 创建action: show_a_list, 在对应的view中, 创建一个数组, 然后使用<ul>, <li>标签显示出来,
+例如:
+
+```
+<ul>
+  <li>Banana</li>
+  <li>Apple</li>
+  <li>Orange</li>
+</ul>
+```
+
 
 - 显示当前时间
 - 在controller中定义一个变量, 然后把它在view中显示出来.
@@ -224,3 +253,6 @@ render xxx,  :object ...
 本节中的例子，对应的源代码，可以来这里下载： https://github.com/sg552/rails_lesson_3_view
 
 本节对应的ppt, 可以来这里下载： http://siwei.me/about-me/speaks
+
+
+# todo : raw

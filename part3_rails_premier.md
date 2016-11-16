@@ -27,7 +27,10 @@ javascript: Angular, React, Vuejs..
 在上面的 web开发框架中， Rails, 完胜 其他框架。 什么叫完胜呢？
 
 1. 开发速度第一。 其他框架一个月，Rails： 1～2周。  包括 PHP .
-2.
+2. rails框架, 把其他的框架的优点,都整合到了一起.
+rails = spring + struts + hibernate  + django
+
+学会了rails , 看其他框架,都是换汤不换药. 比如:  上手 vuejs就特别快.
 
 ## 为什么PHP 不是WEB开发的 首选。
 
