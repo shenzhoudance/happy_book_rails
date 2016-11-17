@@ -2,8 +2,23 @@
 
 ## rails关联的军规
 
-关联，务必写全两端！ 无论1：N， N:N, 都要写全两端。否则会出初学者看不懂的错误。
+1. 关联，务必写全两端！ 无论1：N， N:N, 都要写全两端。否则会出初学者看不懂的错误。
 另外，写全了两端，对于理解代码，是特别有好处的。
+
+2. 掌握好单数,复数.
+
+- model 名字是单数, 例如 app/models/user.rb,
+
+```
+class User < ActiveRecord::Base
+end
+```
+
+- belongs_to 后面必须是单数, 都是小写
+- has_many 后面必须是复数
+- controller 都是复数, 例如 users_controller.
+- 数据库的表明都是复数, 例如  users 表.
+
 
 ## 为什么要学
 
