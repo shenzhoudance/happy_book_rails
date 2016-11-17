@@ -471,3 +471,40 @@ add_index :students, :name
 remove_index :students, :name
 ```
 
+## 几个注意：
+
+- 所有的model ， 都是单数。
+- 所有的controller, 都是复数（原则上）
+- 所有的table， 都是复数。（例如： egg => eggs, person => people, wife -> wives)
+
+如果弄错了，rails的代码在默认配置下就会出错。
+
+## 不学的内容
+
+不要这样写, 容易乱：
+
+```
+  def change
+    create_table :appointments do |t|
+      t.belongs_to :physician
+      t.belongs_to :patient
+      t.datetime :appointment_date
+      t.timestamps
+    end
+  end
+```
+
+可以这样写(就把外键当成最普通的列就行了)：
+
+```
+class CreateAppointments < ActiveRecord::Migration
+  def change
+    create_table :appointments do |t|
+      t.integer :physician_id
+      t.integer :patient_id
+      t.datetime :appointment_date
+      t.timestamps
+    end
+  end
+end
+```
