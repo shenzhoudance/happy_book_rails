@@ -3,6 +3,7 @@
   * [毕业设计](biye.md)
   * [哪些不学](part3_rails_premier/buyongxue.md)
 * [与前端相关](authentication.md)
+* [数据结构](data_structure.md)
 * [数据库](database.md)
   * [后端的使用方式](database_server.md)
   * [前端命令行的使用方式](database_command_line.md)

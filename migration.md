@@ -154,6 +154,25 @@ end
 
 所以, 数据库迁移是极其重要的.
 
+
+# rollback 的 实战经验:
+
+在实战中, 我们99%的情况, 都不需要rollback. 我们如果要修改表结构, 要rake db:migrate.
+
+啥时候才rollback呢? 部署失败了. 临时的回滚一小会儿.
+
+我们也可以随时回滚到任意时刻的 数据库的版本, 但是不实用.  为什么呢?
+
+1. 一回滚, 历史数据全没.
+2. 我们往往不知道, 部署的代码,跟原来的数据库的版本的对应关系.
+道理上讲, 我们某个版本的代码,让它对应着该版本中,最新的数据库迁移就好了.
+但是, 我们实践中发现, 难以对应好这个"代码的版本"和 "数据库的版本" 不好找.
+而且,测试数据不好弄.  而且 回滚的时候, 容易丢失东西.
+3. 与其在回滚上消耗实践, 我们实战的经验,往往是: 在部署前, 手动备份一下数据库.
+如果没问题,很好.如果有问题,就:
+  3.1 回滚代码.
+  3.2 恢复"刚刚手动备份的数据库"  效果远远好于 "rollback"得到的数据库.
+
 ## 使用原则
 
 记得：
@@ -166,6 +185,7 @@ end
   - 修改列
   - 删除列
 - migration 一旦创建好，并且上传到了远程服务器，就绝对不能做改动。
+
 
 ## 例子
 
@@ -508,3 +528,17 @@ class CreateAppointments < ActiveRecord::Migration
   end
 end
 ```
+
+## 作业
+
+1. 在本地安装好 mysql 服务器端, mysql客户端(gui)
+2. 创建rails项目.
+3. 在rails项目中, 配置好于mysql的连接. 数据库的名字为: demo
+4. 使用 rake db:create 命令来创建数据库.
+5. 建立一个migration, 新建一个表: books, 有两个列: author(string), title(string)
+另外, 有时间戳列(created_at, updated_at)(提示:使用 t.timestamps 来创建)
+6. 建立migration, 修改这个表的列, 把author 的名字,改成 zuo_zhe .
+7. 建立migration, 删掉这个表的列:title,  再新建一个列: name.(string)
+8. 建立migration, 删掉这个books 表.
+9. rollback 两步.
+10. 再 rake db:migrate 回来.

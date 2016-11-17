@@ -277,6 +277,58 @@ $ bundle exec thin restart -C config/thin.yml
 ```
 
 
+## 使用 thin + nginx 来部署。
+
+前提：
+
+1. 要使用 asset pipeline
+
+$ bundle exec rake assets:precompile RAILS_ENV=production
+
+2. 在nginx中，进行设置。 让nginx来响应对于 css， js的请求。
+
+修改 nginx的配置文件如下：( 注意： `location ~ ^/assets/` 这句话。 )
+
+```
+  server {
+          listen       80;
+          server_name  railsgirlsbeijing.com;
+          charset utf-8;
+          location / {
+              proxy_pass          http://rails_girls_site;
+              proxy_redirect      default;
+              proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header    X-Real-IP $remote_addr;
+              proxy_set_header    Host $http_host;
+              proxy_next_upstream http_502 http_504 error timeout invalid_header;
+          }
+          # 这句话，最重要。
+          # 表示，所有url中，以 /assets 开头的 url， 都会被nginx所响应。
+          location ~ ^/assets/ {
+
+            # 表示，处理这些请求的话，应该从哪个文件夹开始。
+            root /opt/app/siwei/rails_girls_cn/shared;
+            expires 1y;
+            add_header Cache-Control public;
+            add_header ETag "";
+            break;
+          }
+  }
+  upstream rails_girls_site{
+    server localhost:3560;
+    server localhost:3561;
+  }
+```
+
+记得在 config/environments/production.rb文件中： (以后可以使用nginx来 配置，处理静态文件。现在先这样弄着）
+
+```
+Cms::Application.configure do
+    # 不让 rails 来处理 /assets 开头的 url
+    config.serve_static_assets = false
+end
+```
+
 ## 调试Rails 服务器:
 
 手段是看Log(日志).
