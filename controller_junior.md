@@ -1,5 +1,42 @@
 # 从controller中读取request的参数
 
+## 军规
+
+1. 7个默认的路由，不能被覆盖。 例如：
+
+```
+resouces :books do
+  collection do
+    get :new  # 这样不行，不要重复定义路由。
+  end
+end
+```
+
+2. redirect_to 或者 render 只能有一个。并且这两者都只能出现在 action的最后一行.
+他们相当于方法的return， 执行完之后，不会往下面继续执行。
+
+```
+  def create
+    Teacher.create :name => params[:the_name]
+    render :text => 'ok'
+    redirect_to books_path
+  end
+```
+
+## 开始之前
+
+记得修改  application_controller.rb , 把它的 把它的protect_from_forgery 注释掉。
+
+```
+class ApplicationController < ActionController::Base
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  #protect_from_forgery with: :exception
+end
+```
+
+上面的代码，要求我们提交表单时，多提交几个参数。我们从学习的目的出发，暂时先把它注释掉。
+
 ## 参数的来源：  两种：
 
 1.url .  例如:  `/books?name=三体`
