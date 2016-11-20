@@ -33,14 +33,9 @@
   * [Layout 布局](part3_rails_premier/layout.md)
   * [Asset pipeline](part3_rails_premier/asset_pipeline.md)
   * [Server 服务器](part3_rails_premier/rails_thin_deploy.md)
-
-  8 把所有串起来.
-  9 各种rails的组件.
-
   * [rails 接口](part3_rails_premier/interface_document.md)
-  * [接口入门](part3_rails_premier/rails_interface.md)
+  * [更侧重于APP端的接口入门](part3_rails_premier/rails_interface.md)
   * [调试接口的工具: POSTMan](postman.md)
-
   * [各种回调（钩子)方法](hooks.md)
 
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
