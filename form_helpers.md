@@ -1,12 +1,18 @@
 # form helpers 表单辅助方法
 
+## 军规
+
+一定要熟悉好标准的HTML表单标签. 否则你一定会问出小白问题.
+
+## 本节文档.
+
 本节, 文档: http://guides.rubyonrails.org/form_helpers.html
 
 可以看API:  http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html
 
-注:
+## 本节的前提
 
-前提,我们已经定义好了 `class Article`, 形如:
+我们已经定义好了 `class Article`, 形如:
 
 ```
 class Article < ActiveRecord::Base
@@ -143,6 +149,45 @@ id | title
 <textarea id="message" name="message" cols="24" rows="6">Hi, nice site</textarea>
 <input id="password" name="password" type="password" />
 <input id="parent_id" name="parent_id" type="hidden" value="5" />
+```
+
+## checkbox 多选 与 radio button 单选
+
+多选的例子:
+
+```
+<%= check_box_tag(:banana) %>
+<%= label_tag(:banana, "我喜欢香蕉") %>
+<%= check_box_tag(:orange) %>
+<%= label_tag(:orange, "我喜欢橘子") %>
+```
+
+会依次生成:
+
+```
+<input id="banana" name="banana" type="checkbox" value="1" />
+<label for="banana">我喜欢香蕉</label>
+<input id="orange" name="orange" type="checkbox" value="1" />
+<label for="orange">我喜欢橘子</label>
+```
+
+单选的例子:
+
+```
+<%= radio_button_tag(:sex, "male") %>
+<%= label_tag(:sex_male, "男") %>
+<%= radio_button_tag(:sex, "female") %>
+<%= label_tag(:sex_female, "女") %>
+
+```
+
+会依次生成:
+
+```
+<input id="sex_male" name="sex" type="radio" value="male" />
+<label for="sex_male">男</label>
+<input id="sex_female" name="sex" type="radio" value="female" />
+<label for="sex_female">女</label>
 ```
 
 ## 其他 helper
