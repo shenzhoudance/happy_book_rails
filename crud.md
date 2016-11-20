@@ -1,12 +1,26 @@
-# Model 入门
-
-## 学习收获
+# Model 入门 ## 学习收获
 
 1. 知道如何进入Rails Console.
 2. 知道持久层的概念
 3. 知道如何在Rails中使用model来操作数据库.
 
 Model是 MVC中的M, 作用是操作数据库。
+
+## 军规
+
+model 的名字不能跟项目重名. 例如, 你的项目名字叫"book", 那么 `config/application.rb` 中,
+一定定义了:
+
+```
+module Book
+  class Application < Rails::Application
+  end
+end
+```
+
+那么, 这个`Book`变量已经被全局范围内定义了,
+任何变量都不能叫做这个 `Book`.
+
 
 ## 数据持久层
 
@@ -126,15 +140,19 @@ while (result.next()) {
 例如,
 上面的， 10多行java代码， 转换成： 持久层的操作：
 
-（对于 "select * from books")
+
+```
+"select * from books"
 Book.all
+```
 
-( 对于 "select * from books where author = '大刘' )
-Book.where("name = '大刘'")
+```
+"select * from books where author = '大刘'
+Book.where("= '大刘'")
+```
 
 
-对于 `insert into books(title, author) values ("<<十万个为什么>>", "李博士")`
-:
+`insert into books(title, author) values ("<<十万个为什么>>", "李博士")`
 
 ```
 book = Book.new
@@ -146,13 +164,16 @@ book.save
 上面四行代码，可以简写为：
 
 ```
-Book.create({ :title => '十万个为什么', :authro => '李博士'})
+Book.create :title => '十万个为什么', :author => '李博士'
 ```
 
 你会发现一个巨大的区别：
 
-SQL语句的形式： 特别原始。 不好操作。不好维护。特别容易出错。
-持久层的形式： 特别贴近于自然语言。 好维护。 好学习。 而且：菜鸟写的持久层操作， 都会被自动转换成高手写的SQL语句。
+- SQL语句的形式： 特别原始。 不好操作。不好维护。特别容易出错。
+- 持久层的形式：
+  - 特别贴近于自然语言。
+  - 好维护。 好学习。
+  - 菜鸟写的持久层操作， 都会被自动转换成高手写的SQL语句。
 
 
 例如:
@@ -224,7 +245,32 @@ SELECT COUNT(*) FROM `airport_managers`  WHERE `airport_managers`.`city_id` = 1
 
 下面是个例子:
 
-CRUD:
+
+# rails的控制台(console)
+
+## 新建一个rails项目
+
+```
+$ rails new library
+```
+
+## 运行rails server
+
+```
+$ bundle exec rails server
+```
+
+## migration
+
+```
+$ bundle exec rails generate migration xx
+```
+
+## 进入到console 来做一些操作.
+
+
+
+# 正式学习 CRUD:
 
 先创建一个表：  `books`
 
@@ -336,8 +382,89 @@ irb> Book.where('title like "5%"')
 ```
 Book.where('title like "5%"').order('title desc') # 根据title倒序
 ```
-TODO 补充
 
+## find 查询
+
+### 1. 根据id 查询, 获得一个数据
+
+```
+# 搜索 id = 2 的User
+User.find(2)
+```
+
+假设一个表users, 有两个属性: name, age, 我们就可以使用find 来查询.
+
+例如:
+
+```
+# 搜索 name = '小王'
+User.find_by_name('小王')
+
+# 搜索 name = '小王' , 并且 age = 18 的记录.
+User.find_by_name_and_age('小王', 18)
+
+# 或者
+User.find_by_age_and_name(18, '小王')
+```
+
+得到的结果, 是单数.
+
+## find 与 where 的区别
+
+find 在3.0 之前的版本用的最普遍.
+到 3.0之后,往往被where 取代.
+
+根据查询id 直接用 find(2).
+查询多个数据的话, 往往用where 更加合适一些.
+
+
+find 得到的都是单数
+where 得到的都是复数.
+
+
+
+### TODO where方法历史
+
+squil
+
+### TODO where方法, 能智能判断执行顺序.
+
+### where 方法有时候是不执行的.
+
+
+where 非常智能, 只会在需要执行的时候才会执行.
+(例如,我们在某个controller中)
+
+
+这行代码不会被执行. 因为它的结果没有在任何地方被使用.
+
+```
+def index
+  Book.where('age = 18')
+end
+```
+下面这行代码会被执行, 因为变量 `@books`被用在了view中.
+
+```
+#controller:
+def index
+  @books = Book.where('age = 18')
+end
+```
+
+```
+# view:
+<%= @books %>
+```
+
+如果我们需要某个方法, 立刻马上执行的话, 使用`.all`方法.例如:
+
+```
+def index
+  Book.where('age=18').all
+and
+
+```
 
 ## 与hibernate的比较
 
@@ -468,15 +595,37 @@ end
 
 # 作业：
 
-创建一个rails项目, 连接到本地的mysql， 本地mysql有个表：book， 有两个列： title, author:
+创建一个rails项目, 连接到本地的mysql， 本地mysql有个表：book，
+
+有两个列： title, author:
 
 1. 在console下面， 实现book表的增删改查。
+
+  1.1 新建一个文件, app/models/book.rb
+  1.2 操作,分别试试 book的 crud.
 
 2. 在Rails的action里面， 实现 book表的增删改查。
 
 例如：
 
 2.1 用户访问 /books/create_a_book， 数据库 books表中就会出现一条记录（title: "三体", author: "大刘"），页面显示结果： “操作成功”
+
 2.2 用户访问 /books/update_the_book, 数据库的 books表的第一条记录，的title，就会变成： “十万个为什么”.  页面显示结果： “操作成功"
+
 2.3 用户访问 /books/search_the_book, 数据库的books表，会查询：  author=大刘 的记录。页面显示结果：   找到1/0个结果。
+
 2.4 用户访问 /books/delete_the_book, 会删除数据库books表中的第一条记录。 页面显示结果： “操作成功”
+
+略作提示:
+
+创建rails:  $ rails new ...
+
+创建表:  1. 连接mysql.  2. migration
+
+页面显示文字, 使用 action 里面的 `render`
+
+```
+def index
+  render :text => ''
+end
+```
