@@ -41,8 +41,8 @@
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
   * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
-  * API的查看方式
   * [常见的代码code review](code_review.md)
+
 * [Rails 常用的第三方组件](web_components/preface.md)
   * [分页: kaminari](web_components/kaminari.md)
   * [上传文件](web_components/basic_upload.md)
