@@ -115,6 +115,7 @@ name = "jim"
 使用字符串插值时，记得用双引号．
 
 ```ruby
+name = "jim"
 puts "hi, #{name}!"
 # => hi, jim
 ```
@@ -231,7 +232,7 @@ class Apple
 
   @@from = 'China'
 
-  def color = color
+  def color= color
     @color = color
   end
 

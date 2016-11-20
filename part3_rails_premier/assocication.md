@@ -17,6 +17,12 @@ end
 - belongs_to 后面必须是单数, 都是小写
 - has_many 后面必须是复数
 - controller 都是复数, 例如 users_controller.
+
+```
+class UsersController < ...
+end
+```
+
 - 数据库的表明都是复数, 例如  users 表.
 
 
