@@ -629,7 +629,7 @@ TODO: 把臃肿的代码，COPY到这里。或者做个截图.
 
 这段代码, 来表示上面提到的两种场合(@post 是已经存在的记录,还是没有存在的记录).
 
-### form 中的authentity_token
+### form 中的authentity_token （也叫csrf token)
 
 每一个 `<form>` 中,都有一个`authentity_token`. 防止注入攻击(XSS).
 
