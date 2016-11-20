@@ -1,8 +1,10 @@
 # assets pipeline
 
-## 传统给页面增加 js，css的方式
+所有的 js, css, image, 都叫 assets.
 
-一堆CSS罗列上去：
+## 为啥用它.
+
+传统给页面增加 js，css的方式, 是一堆CSS罗列上去：
 
 ```
 <link rel="stylesheet" href="./static/buttons.css">
@@ -213,31 +215,40 @@ application-308d70d0bd03d91770479da196ec0827.js
 
 ## asset_path 与 public 目录
 
-Rails 2.x的时代， 在 asset pipeline的概念出来之前，所有的图片，js，css 都
-放到public 目录下。
+Rails 2.x的时代， 在 asset pipeline的概念出来之前，所有的图片，js，css 都放到`public` 目录下。
 
-Rails 3.1 以后（2011年），出现了 asset_pipeline , 那么所有的需要进行 js，css压缩
-的内容， 都要放到app/asset
+Rails 3.1 以后（2011年），出现了 `asset_pipeline` , 那么所有的需要进行 js，css压缩
+的内容， 都要放到`app/asset`
 
-所有的 app/assets 目录下的东西，都可以被编译。（ 32.jpg -> 32_a1b2c3d4...z100.jpg)
+所有的 `app/assets` 目录下的东西，都可以被编译。（ `32.jpg` -> `32_a1b2c3d4...z100.jpg`)
 
+通过页面中,加入这个,就可以看到:
+```
 <%= asset_path '2.png' %>
+```
 
 所有的 public 目录下的东西，都可以在开发模式下，被rails服务器所访问。
 例如：
 
-public/images/1.jpg
+`public/images/1.jpg`
 
-index.html.erb:
+在页面index.html.erb中,就可以访问到:
 
+```
 <img src='images/1.jpg'/>
+```
 
-## 为什么不鼓励，把erb中使用的图片，放到public 目录下？
-部署时，几乎所有的 /images,  /assets, 都会被nginx做解析。
-nginx中的解析，会跟rails中直接引用 images/1.jpg 有一些冲突。
+## 为什么不鼓励，把erb中使用的图片，放到`public` 目录下？
+
+部署时，几乎所有的 `/images`,  `/assets`, 都会被nginx做解析。
+nginx中的解析，会跟rails中直接引用 `images/1.jpg` 有一些冲突。
 
 所以，在目前看来， asset pipeline 极度流行， 那么大家不要把erb（css）中
-用到的图片，放到 public 目录下。
+用到的图片，放到 `public` 目录下。
 
-但是： 上传图片，都保存到 public 目录。
+而且在rails 服务器的生产环境下,配置让rails 服务器来解析对于assets的请求,很麻烦.
+
+## 一个例外
+
+上传的文件，都保存到 public 目录。
 
