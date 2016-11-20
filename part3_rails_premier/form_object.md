@@ -2,15 +2,19 @@
 
 前方高能：
 
-1. 本节内容比较多。比较烧脑。大家要务必作作业。不动手，学不会。
+1. 本节是rails三大难之一。比较烧脑。大家要务必作作业。不动手，学不会。
 2. 关于提到的各种helper, 多看官方文档：
 
 - 英文： http://guides.rubyonrails.org/form_helpers.html
-
 - 中文： http://guides.ruby-china.org/form_helpers.html
+- 也可以看API中的文档（写的也特别细） http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
 
-- 也可以看API中的文档（写的也特别细）
-http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
+## 军规
+
+老老实实的使用 `<%= form_for @book do |f| %>` 这样的标准形式( `@变量`, 不是`:变量`, 不要有奇葩的action, 不要让model 对应的class
+对不上号)
+
+初学者不要使用 `simple_form_for`, `nested_form` 这样的插件. 对于老手也不建议在商业 项目中使用.
 
 ## 目录：
 
