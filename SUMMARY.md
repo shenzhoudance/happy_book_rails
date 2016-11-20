@@ -29,7 +29,7 @@
   * [Model: 关联](part3_rails_premier/assocication.md)
   * [Controller 基本功能](controller_junior.md)
   * [Form 表单对象](part3_rails_premier/form_object.md)
-  * [Form 自定义的标签).](form_helpers.md)
+  * [Form 自定义的标签-也叫辅助方法 ).](form_helpers.md)
   * [Layout 布局](part3_rails_premier/layout.md)
   * [Asset pipeline](part3_rails_premier/asset_pipeline.md)
   * [Server 服务器](part3_rails_premier/rails_thin_deploy.md)
