@@ -39,7 +39,6 @@
   * [各种回调（钩子)方法](hooks.md)
 
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
-  * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * [常见的代码code review](code_review.md)
 
