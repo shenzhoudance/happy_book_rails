@@ -524,6 +524,8 @@ A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
 
    - 1.1 使用纯 SQL语句： 查询 小李的妈妈。
    - 1.2 创建一个rails项目，创建相关的model. 然后在 Rails console 中， 查询 小李的妈妈。
+   - 1.3 创建一个路由:  /students/find_mother_by_student_name
+   访问后, 会在页面(erb)上展示结果.
 
 
 2.使用 mysql, mysql work bench, 创建 3个表：
@@ -536,3 +538,5 @@ A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
    然后根据 某个学生的名字，查出它的所有老师。
    也是： 又用SQL， 又要用 Rails console来实现。
 
+   创建一个路由:  /students/find_teachers_by_student_name
+   访问后, 会在页面(erb)上展示结果.
