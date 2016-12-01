@@ -29,25 +29,19 @@
   * [Model: 关联](part3_rails_premier/assocication.md)
   * [Controller 基本功能](controller_junior.md)
   * [Form 表单对象](part3_rails_premier/form_object.md)
-  * [Form 自定义的标签).](form_helpers.md)
+  * [Form 自定义的标签](form_helpers.md)
   * [Layout 布局](part3_rails_premier/layout.md)
   * [Asset pipeline](part3_rails_premier/asset_pipeline.md)
   * [Server 服务器](part3_rails_premier/rails_thin_deploy.md)
-
-  8 把所有串起来.
-  9 各种rails的组件.
-
   * [rails 接口](part3_rails_premier/interface_document.md)
-  * [接口入门](part3_rails_premier/rails_interface.md)
+  * [更侧重于APP端的接口入门](part3_rails_premier/rails_interface.md)
   * [调试接口的工具: POSTMan](postman.md)
-
   * [各种回调（钩子)方法](hooks.md)
 
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
-  * [rails 命令行](part3_rails_premier/rails_command_line.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
-  * API的查看方式
   * [常见的代码code review](code_review.md)
+
 * [Rails 常用的第三方组件](web_components/preface.md)
   * [分页: kaminari](web_components/kaminari.md)
   * [上传文件](web_components/basic_upload.md)

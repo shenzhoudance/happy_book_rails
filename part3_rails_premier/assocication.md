@@ -1,9 +1,30 @@
 # 数据库关联
 
-## rails关联的军规
+## 军规
 
-关联，务必写全两端！ 无论1：N， N:N, 都要写全两端。否则会出初学者看不懂的错误。
+1. 关联，务必写全两端！ 无论1：N， N:N, 都要写全两端。否则会出初学者看不懂的错误。
 另外，写全了两端，对于理解代码，是特别有好处的。
+
+2. 掌握好单数,复数.
+
+- model 名字是单数, 例如 app/models/user.rb,
+
+```
+class User < ActiveRecord::Base
+end
+```
+
+- belongs_to 后面必须是单数, 都是小写
+- has_many 后面必须是复数
+- controller 都是复数, 例如 users_controller.
+
+```
+class UsersController < ...
+end
+```
+
+- 数据库的表明都是复数, 例如  users 表.
+
 
 ## 为什么要学
 
@@ -503,6 +524,8 @@ A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
 
    - 1.1 使用纯 SQL语句： 查询 小李的妈妈。
    - 1.2 创建一个rails项目，创建相关的model. 然后在 Rails console 中， 查询 小李的妈妈。
+   - 1.3 创建一个路由:  /students/find_mother_by_student_name
+   访问后, 会在页面(erb)上展示结果.
 
 
 2.使用 mysql, mysql work bench, 创建 3个表：
@@ -515,3 +538,5 @@ A : B = 1 : N.   B : C =  1 : n    c:d = 1:n
    然后根据 某个学生的名字，查出它的所有老师。
    也是： 又用SQL， 又要用 Rails console来实现。
 
+   创建一个路由:  /students/find_teachers_by_student_name
+   访问后, 会在页面(erb)上展示结果.

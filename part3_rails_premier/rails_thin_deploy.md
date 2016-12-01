@@ -4,7 +4,7 @@
 ## 介绍.
 rails的 运行方式：  3种：
 
-### 1. development.
+### 1.development.
 
 日常开发使用的模式。 该模式下，我们对于rb文件的改动，会立即生效 （不用重启服务器了！ ）
 
@@ -26,7 +26,7 @@ rails的 运行方式：  3种：
 
 所以，在这个版本以后，部署就多了一些内容。(多运行一个命令)
 
-### 3. test
+### 3.test
 
 一般人用不上。 但是我们要用。 这个是测试环境。 在运行单元测试的时候，使用。
 它的特点： 每次运行测试前，数据库的内容都会清空。
@@ -83,7 +83,7 @@ $ bundle exec rails server
 2. 端口： 3000
 3. 方式： development
 
-启动后,在浏览器中输入 "http://localhost:3000" 即可访问.
+启动后,在浏览器中输入 `http://localhost:3000` 即可访问.
 
 ## production 模式。
 
@@ -98,7 +98,9 @@ $ bundle exec rails server -e production
 最入门，也最low。 它用的服务器，是 rails自带的服务器(webrick)。 性能不好(类似于数据库中的 sqlite)。
 同时10个请求访问，就会卡。所以不要用。
 
-什么时候用呢？ 做 测试部署 的时候，可以用。 用这个命令，可以快速的判定，当前的环境能否适合部署。
+而且css, images, 都不会正常显示出来.
+
+优点: 做 测试部署 的时候，可以用。 用这个命令，可以快速的判定，当前的环境能否适合部署。
 
 
 ### 2. 最常见的模式
@@ -215,7 +217,7 @@ Listening on 0.0.0.0:3000, CTRL+C to stop
 
 4.使用 production模式
 
-虽然 thin 也支持 各种参数（修改`port`, `host` , `environment` ... ）跟 rails server一样，
+虽然 thin 也支持 各种参数（修改`port`, `host` , `environment` ... ）跟 `rails server` 一样，
 
 但是我们在实战中，使用配置文件来运行.（最大的好处： 一次可以启动多个thin进程，跑在不同
 的端口上）
@@ -223,7 +225,7 @@ Listening on 0.0.0.0:3000, CTRL+C to stop
 配置文件如下：
 
 ```
-# config/thin.yml
+# 文件名: config/thin.yml
 chdir: /opt/app/siwei.me/current   # 你的rails 应用的所在目录
 environment: production    # 指定了 是 production模式
 address: 0.0.0.0
@@ -281,9 +283,14 @@ $ bundle exec thin restart -C config/thin.yml
 
 前提：
 
-1. 要使用 asset pipeline
+1. 要使用 asset pipeline. 对现有的 asset pipeline进行编译:
 
+```
 $ bundle exec rake assets:precompile RAILS_ENV=production
+```
+
+以上操作大约耗时1-15分钟不等. 看你用的asset pipeline如何了.
+它会生成大量的assets 编译后的文件.
 
 2. 在nginx中，进行设置。 让nginx来响应对于 css， js的请求。
 
@@ -320,13 +327,19 @@ $ bundle exec rake assets:precompile RAILS_ENV=production
   }
 ```
 
-记得在 config/environments/production.rb文件中： (以后可以使用nginx来 配置，处理静态文件。现在先这样弄着）
+记得在 config/environments/production.rb文件中：
 
 ```
 Cms::Application.configure do
-    # 不让 rails 来处理 /assets 开头的 url
+    # 不让 rails 来处理 /assets 开头的 url, 这些要交给nginx来处理.
     config.serve_static_assets = false
 end
+```
+
+修改好配置后, 记得重启nginx:
+
+```
+$ sudo nginx -s reload   # 重启服务器
 ```
 
 ## 调试Rails 服务器:

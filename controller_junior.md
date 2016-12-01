@@ -2,7 +2,7 @@
 
 ## 军规
 
-1. 7个默认的路由，不能被覆盖。 例如：
+1.7个默认的路由(`index`, `show`, `new`, `edit`, `update`, `destroy`, `create`)，不能被覆盖。 例如：
 
 ```
 resouces :books do
@@ -12,7 +12,7 @@ resouces :books do
 end
 ```
 
-2. redirect_to 或者 render 只能有一个。并且这两者都只能出现在 action的最后一行.
+2.redirect_to 或者 render 只能有一个。并且这两者都只能出现在 action的最后一行.
 他们相当于方法的return， 执行完之后，不会往下面继续执行。
 
 ```

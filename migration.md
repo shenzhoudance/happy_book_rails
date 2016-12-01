@@ -2,6 +2,11 @@
 
 migration, 是 DB migration的缩写。 这要写起来的话，也是厚厚的一本书。
 
+## 军规
+
+migration 一旦建立好,就不要修改! 不要删除!
+要修改数据库,就建立新的migration.
+
 ## migration是什么?
 
 我们修改DB的时候，原始的办法是：
