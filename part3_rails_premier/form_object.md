@@ -652,28 +652,23 @@ text_field,  select
 
 作业：
 
-1. 实现一个form
-2. form中，包含：
+1. 新建一个项目, 就是对学生的增删改查.
+2. 实现一个form ,  form中，包含：
+  2.1 姓名 string
+  2.2 性别 单选 radio  , 选项: male, female
+  2.3 爱好 多选 checkbox, 选项: lol, dota, cf, music
+  2.4 自我评价 textarea
+  2.5 星座 ( select)
+  ( 把上面几个学好就可以。 不用学的：   日期输入框,数字， url, phone .. 其他的都不用学。)
 
-```
-<input type='text'/>
-<input type='hidden'/>
-<textarea/>
-<select>
-<options>
-<input type='radio'/>
-<input type='checkbox'/>
-<input type='file'/>
-<input type='password'/>
-```
+要使用form_for
 
-把上面几个学好就可以。
+TODO 下面作业是下节课的
 
-不用学的：   日期输入框,数字， url, phone .. 其他的都不用学。
+3. 把new.html.erb和 edit.html.erb中的 form_for 提取成为一个partial.
 
 3. 实现一个 select （ 选择框，下拉单， drop down (US 叫法））
 里面的选项， 来自于： 数据库。  举个例子：
-
 
 3.1
 数据库中，有两个表，books(书） , 一个是： publisher （出版社）   books :  publisher = n : 1
