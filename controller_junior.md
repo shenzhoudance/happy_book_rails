@@ -186,7 +186,7 @@ POST /books
   end
 
   def create
-    Teacher.create :name => params[:the_name]
+    Book.create :name => params[:the_name]
     redirect_to books_path
   end
 ```
