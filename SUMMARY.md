@@ -41,6 +41,7 @@
   * [Rails Test Unit](part3_rails_premier/unit_test.md)
   * [CSRF token](part3_rails_premier/csrf_token.md)
   * [常见的代码code review](code_review.md)
+  * [序列化](serialization.md)
 
 * [Rails 常用的第三方组件](web_components/preface.md)
   * [分页: kaminari](web_components/kaminari.md)
