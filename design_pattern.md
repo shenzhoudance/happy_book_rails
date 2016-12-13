@@ -95,3 +95,141 @@ green_apple.color  # => 'green'
 
 
 
+
+
+## 设计模式
+
+30年以前, 那时候的主流语言: c, vb, 汇编.
+
+操作非常底层, 非常原始. 甚至一些语言, 没有循环的语法.
+只有 go-to .  通过go-to ,来实现循环的目的.
+
+例如:  我们希望对一个数组,做遍历.  现在这样写:
+
+```
+[1,2,3].each do |e|
+   puts e
+end
+```
+
+之前是:
+
+```
+for .. each
+end
+```
+
+再往前:
+
+```
+a = [1,2,3]
+
+for( i = 0 ; i < a.length; i++){
+
+}
+```
+
+再往前:
+
+```
+a = [1,2,3]
+i = 0
+while(i < a.length ) {
+  System.out.println("e is: " + e);
+  i ++;
+}
+
+```
+
+再往前:  (更不好理解了)
+
+```
+   int a = 10;
+
+   /* do loop execution */
+   LOOP:do {
+
+      if( a == 15) {
+         /* skip the iteration */
+         a = a + 1;
+         goto LOOP;
+      }
+
+      printf("value of a: %d\n", a);
+      a++;
+
+   }while( a < 20 );
+
+```
+
+## 痛点:
+
+1. 大家的代码,一不小心,就写的特别乱.
+2. 代码不好读.
+
+所以,一些老手, 慢慢的,就发展出了,一些面对特定问题的固定的解决写法.
+我们管这个叫"模式".  (在国外, pattern, 是一个建筑工程师, 首次提出来的.
+alexandar(?) )
+
+跟今天的 按照习俗来编程是一样的.
+
+经典的设计模式. <<Design patterns>> , 作者4个人. Gang of Four.
+
+设计模式,最初,只口头流传与, 业内的顶级高手. 于是他们四个就做整理.
+梳理出 24种设计模式.  包括三大类.
+
+所以, 如果不懂设计模式,就== 不同面向对象编程.
+
+创建类
+  Singleton   :
+		a = DatabaseTool.getConnection()
+
+	Prototype
+
+
+  Builder
+  Factory
+  Factory Builder
+
+行为类
+  Iterator
+	Visitor
+  Listener
+  Command
+
+
+class EditorCommand
+
+  def redo
+	end
+
+  def undo
+  end
+
+  def execute
+	end
+
+end
+
+
+
+  Responsibility Chaining
+
+结构类
+  Bridge
+  Strategy
+  Adapter
+
+
+MVC: 是一种 "思想". 层面非常高, 非常概括行的"分层思想"
+
+
+form object 思想:
+
+封装.  把一个form中零散的20个属性, 封装成一个大的对象. 这个对象,就是表单对象.
+
+
+<form action='/books'>
+  <input type='text' name='tit'
+
+</form
