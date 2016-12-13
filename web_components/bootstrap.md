@@ -11,35 +11,28 @@ Bootstrap是一个非常棒的CSS/HTML的框架，最初来自Twitter。它能�
 ##用法
 在Rails中`bootstrap-sass`是一个gem，使用起来非常简单。
 
-在Gemfile中添加这个gem，于此同时还需要添加另一个gem`sass-rails`，来保障依赖关系。
+Gem:
 
-```ruby
-gem 'bootstrap-sass', '~> 3.3.5'
-gem 'sass-rails', '>= 3.2'
-```
+gem 'twitter-bootstrap-rails', '3.2.0'
 
-然后再`bundle install`，并且重启你的rails server来让它生效。
+$ bundle install
 
-导入Bootstrap Styles到你的项目中，打开你的`app/assets/stylesheets/application.scss`，并添加如下的代码来引用它：
-```scss
-// "bootstrap-sprockets"的导入必须写在 "bootstrap" 和"bootstrap/variables"之前
-@import "bootstrap-sprockets";
-@import "bootstrap";
-```
-一定要保证你写入的这个文件的扩展名是`.scss`（或者是'.sass'）。如果你是刚新建的一个rails项目，可能是会是`.css`文件扩展名，这就需要你把它改掉。
+$ rails generate bootstrap:install static
 
-可以使用如下命令：
-```console
-$ mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss
-```
+修改application.js:
 
-删掉这个文件中所有的`//require`和`//=require_tree`标签，都改为`@import`来引用刚刚下载的zip包里的sass文件。不使用`//require`是因为这样就无法访问bootstrap的混合类型和变量。
++//= require twitter/bootstrap
 
-在`app/assets/javascripts/application.js`中添加对bootstrap js的引用：
+修改 application.css:
 
-```js
-//= require jquery
-//= require bootstrap-sprockets
-```
++ *= require bootstrap_and_overrides.css
+
+## 去掉  turbo-links
+
+-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
++  <%= stylesheet_link_tag    'application', media: 'all' %>
++  <%= javascript_include_tag 'application' %>
+
 
 然后就可以开始在代码中使用bootstrap了。
