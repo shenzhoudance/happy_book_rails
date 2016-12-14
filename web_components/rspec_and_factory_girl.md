@@ -1,34 +1,39 @@
-###使用 RSpec + Factory Girl 高效测试
+###使用 RSpec 进行单元测试
 
-RSpec是一种描述性语言，通过可行的例子描述系统行为，非常容易上手，测试用例非常容易理解。Factory Girl可以很好的帮助构造测试数据，免去了自己写fixture的烦恼。
+1. 添加下面代码到Gemfile:
 
-第一步 安装rspec和rspec-rails
+```
+# Gemfile:
+gem 'rspec-rails', '~> 3.0.0'
+```
 
-在命令行中执行如下命令：
+然后运行：
+```
+$ bundle exec rails generate rspec:install
+```
+记得要把生成的.rspec 文件做个修改，删掉
+# .rspec file:
 
-	$ sudo gem install rspec v = 1.3.0
-	$ sudo gem install rspec-rails v = 1.3.2
-安装完成后，进入rails应用所在的目录，运行如下脚本，生成spec测试框架：
+```
+--color
+# 不要有 : --warning, --require spec_helper
+```
 
-	$ script/generate rspec          
-    	exists  lib/tasks
- 	identical  lib/tasks/rspec.rake
- 	identical  script/autospec
- 	identical  script/spec
-    	exists  spec
- 	identical  spec/rcov.opts
- 	identical  spec/spec.opts
- 	identical  spec/spec_helper.rb
- 	
-第二步 安装factory-girl
+2. 下面是测试lib文件的一个例子： make sure your have this:
 
-在命令行中执行如下命令：
+```
+# config/application.rb
+config.autoload_paths += %W(#{config.root}/lib)
+```
 
-	$ sudo gem install factory-girl
-	
-在config/environment/test.rb中，加入factory-girl这个gem：
+```
+require 'rails_helper' # 这句话极度重要.
+require 'html_parser'  # it's not require 'lib/html_parser'
+describe HtmlParser do
 
-	config.gem "factory_girl"
-	
-在spec/目录下，增加一个factories.rb的文件，用于所有预先定义的model工厂。	
+  it 'should parse html_content' do
+    puts 'hihihi'
+  end
 
+end
+```
