@@ -17,6 +17,7 @@
 
 * Web基础
   * [发起请求的原理](network_basic.md)
+  * [对服务器的称谓](server_names.md)
 
 * [Rails 入门](part3_rails_premier.md)
   * [学习过程](part3_rails_premier/rails_steps.md)
@@ -52,9 +53,11 @@
   * [即时上传 jquery-upload]
   * [上传图片到云 upyun](web_components/upyun.md)
   * [即时上传 jquery-upload]()
+  * [发送restful请求  HTTParty](web_components/httparty.md)
+  * [POSTMan的用法]
+  * [Chrome中使用jsonview]
   * [发送短信](web_components/sms.md)
   * [wysiwyg 所见即所得编辑器](web_components/wysiwyg_ckeditor.md)
-  * [发送restful请求  HTTParty](web_components/httparty.md)
   * [日志工具log4r](web_components/log4r.md)
   * [配置 rails-config](web_components/rails_config.md)
   * [分析HTML: nokogiri](web_components/nokogiri.md)
