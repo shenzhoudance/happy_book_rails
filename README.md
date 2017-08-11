@@ -8,12 +8,12 @@
 
 有任何问题欢迎联系我:  shensiwei@sina.com
 
-## 先说查看方法
+## 查看方法
 
 1. 安装 npm
 2. 安装 node
 3. 安装 gitbook
-4. $ gitbook serve
+4. $ gitbook serve  ( 注意这里不是 $ gitbook server)
 
 然后就可以看到了!
 
